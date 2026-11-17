@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1e3a8a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="히로시마 교류">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<title>히로시마 교류</title>
+<style>
+:root{--pri:#1e40af;--pri2:#3b82f6;--bg:#f1f5f9;--card:#fff;--line:#e2e8f0;--tx:#0f172a;--sub:#64748b;--red:#dc2626;--ok:#059669;--warn:#d97706}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;background:#cbd5e1;color:var(--tx);font-size:15px;line-height:1.5}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none;padding:0}
+#app{max-width:480px;margin:0 auto;height:100dvh;display:flex;flex-direction:column;background:var(--bg);position:relative;overflow:hidden}
+header{background:var(--card);border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top)) 16px 10px;display:flex;align-items:center;gap:8px}
+header h1{font-size:18px;margin:0;color:var(--pri);flex:1;line-height:1.2}
+header h1 small{display:block;font-size:11px;color:var(--sub);font-weight:500}
+.hbtn{width:40px;height:40px;border-radius:50%;background:#eff6ff;font-size:19px;position:relative;flex:none}
+.hbtn.sos{background:#fee2e2}
+.badge{position:absolute;top:-3px;right:-3px;min-width:18px;height:18px;border-radius:9px;background:var(--red);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.badge:empty{display:none}
+main{flex:1;min-height:0;display:flex;flex-direction:column}
+.view{flex:1;min-height:0;overflow-y:auto;padding:14px;display:none;-webkit-overflow-scrolling:touch}
+.view.on{display:block}
+#v-talk.on{display:flex;flex-direction:column;padding:0;overflow:hidden}
+nav{background:var(--card);border-top:1px solid var(--line);display:flex;padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:11px;color:var(--sub);padding:4px 0;position:relative}
+nav button i{font-style:normal;font-size:21px;filter:grayscale(1);opacity:.6;position:relative}
+nav button.on{color:var(--pri);font-weight:700}
+nav button.on i{filter:none;opacity:1}
+nav .badge{top:-4px;right:-12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.hero{background:linear-gradient(135deg,#1e40af,#4f46e5);color:#fff;border:0}
+.hero h2{margin:0 0 2px;font-size:17px}.hero p{margin:0;font-size:13px;opacity:.9}
+.hero .dday{display:inline-block;margin-top:10px;background:rgba(255,255,255,.2);border-radius:8px;padding:4px 10px;font-size:13px;font-weight:600}
+h3.sec{font-size:14px;margin:18px 2px 8px;color:#334155}
+.next b{color:var(--pri)}.next .t{font-size:12px;color:var(--sub)}
+.next .now{border-left:3px solid var(--ok);padding-left:10px;margin-bottom:10px}
+.next .nx{border-left:3px solid var(--pri2);padding-left:10px}
+.notice{border-left:4px solid var(--warn)}
+.meta{font-size:12px;color:var(--sub)}
+.notice p{margin:4px 0 10px;white-space:pre-wrap;word-break:break-word}
+.muster{background:#fef2f2;border:2px solid #fca5a5}
+.muster .big{font-size:22px;font-weight:800;color:var(--red);line-height:1.25}
+.wx{display:flex;gap:10px;align-items:center;padding:10px 14px}.wx b{font-size:14px}.wx .d{flex:1;font-size:13px;color:#475569}
+.tipbox{background:#fffbeb;border:1px solid #fde68a}.tipbox ul.pl{margin:0}.tipbox li{font-size:13.5px}
+.btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--pri);color:#fff;border-radius:10px;padding:10px 14px;font-weight:600;font-size:14px}
+.btn.full{width:100%}.btn.big{padding:14px;font-size:16px}
+.btn.ghost{background:#eff6ff;color:var(--pri)}.btn.gray{background:#e2e8f0;color:#334155}
+.btn.ok{background:var(--ok)}.btn.red{background:#fee2e2;color:var(--red)}
+.btn.sm{padding:6px 10px;font-size:13px;border-radius:8px}
+.btn:disabled{opacity:.5}
+.done{color:var(--ok);font-weight:700;font-size:14px}
+.miss{font-size:12px;color:var(--red);margin-top:6px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 8px;text-align:center;font-weight:600;font-size:13px;width:100%}
+.tile i{display:block;font-style:normal;font-size:26px;margin-bottom:4px}
+.row{display:flex;gap:8px;align-items:center}.row.wrap{flex-wrap:wrap}.sp{flex:1}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:10px 14px;scrollbar-width:none;flex:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:6px 13px;border-radius:99px;background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:600;color:#475569;position:relative}
+.chip.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.seg{display:flex;background:var(--card);border-bottom:1px solid var(--line);flex:none}
+.seg button{flex:1;padding:11px 0;font-weight:600;color:var(--sub);border-bottom:2px solid transparent;position:relative}
+.seg button.on{color:var(--pri);border-color:var(--pri)}
+.seg .badge,.chip .badge{position:static;display:inline-flex;margin-left:4px;vertical-align:middle}
+.seg .badge:empty{display:none}
+.pane{flex:1;min-height:0;display:none;flex-direction:column}.pane.on{display:flex}
+#chatList{flex:1;min-height:0;overflow-y:auto;padding:4px 14px 10px}
+.msg{display:flex;gap:8px;margin:8px 0;align-items:flex-end}
+.msg.me{flex-direction:row-reverse}
+.msg .bub{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 11px;white-space:pre-wrap;word-break:break-word;font-size:14.5px}
+.msg.me .bub{background:#dbeafe;border-color:#bfdbfe}
+.msg .who{font-size:11.5px;color:var(--sub);margin-bottom:2px;font-weight:600}
+.msg .tm{font-size:10.5px;color:#94a3b8;flex:none}
+.msg img{max-width:100%;max-height:260px;object-fit:cover;border-radius:10px;display:block}
+.msg .del{font-size:11px;color:#94a3b8}
+.av{width:32px;height:32px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px}
+.g1{background:#f97316}.g2{background:#3b82f6}.g3{background:#10b981}.g4{background:#a855f7}.gT{background:#334155}
+.gtag{font-size:11px;font-weight:600;padding:1px 6px;border-radius:5px;background:#f1f5f9;color:#475569;margin-left:4px}
+.mtag{font-size:11px;font-weight:700;padding:1px 6px;border-radius:5px;background:#fef3c7;color:#92400e;margin-left:4px}
+.inbar{display:flex;gap:8px;padding:8px 12px;background:var(--card);border-top:1px solid var(--line);align-items:flex-end;flex:none}
+.inbar textarea,.inbar input{flex:1;border:1px solid var(--line);border-radius:18px;padding:9px 13px;background:#f8fafc;resize:none;max-height:96px;outline:none;min-width:0}
+.ibtn{width:40px;height:40px;border-radius:50%;background:#eff6ff;font-size:18px;flex:none}
+.ibtn.send{background:var(--pri);color:#fff}
+#feedWrap{flex:1;min-height:0;overflow-y:auto;padding:0 14px 80px}
+.fab{position:absolute;right:16px;bottom:84px;background:var(--pri);color:#fff;border-radius:99px;padding:12px 18px;font-weight:700;box-shadow:0 6px 16px rgba(30,64,175,.35);z-index:5}
+.post .head{display:flex;gap:9px;align-items:center;margin-bottom:8px}
+.post .nm{font-weight:700;font-size:14px}
+.post .txt{white-space:pre-wrap;word-break:break-word;margin:0 0 8px}
+.media{display:grid;gap:3px;border-radius:12px;overflow:hidden;margin-bottom:8px}
+.media.n1{grid-template-columns:1fr}.media.n2,.media.n4{grid-template-columns:1fr 1fr}
+.media.n3,.media.n5{grid-template-columns:1fr 1fr 1fr}
+.media > *,.alb > *{aspect-ratio:1;width:100%;height:100%;object-fit:cover;background:#e2e8f0;display:block}
+.media.n1 > *{aspect-ratio:4/3}
+.alb{display:grid;grid-template-columns:1fr 1fr 1fr;gap:3px;border-radius:12px;overflow:hidden;margin-bottom:6px}
+.vtile{position:relative;display:flex;align-items:center;justify-content:center;background:#0f172a!important;color:#fff;width:100%}
+.vtile video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.75}
+.vtile span{position:relative;z-index:1;background:rgba(0,0,0,.45);border-radius:50%;width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:22px}
+.linkbox{display:block;background:#f1f5f9;border-radius:10px;padding:9px 11px;font-size:13px;color:var(--pri);word-break:break-all;margin-bottom:8px;text-decoration:none}
+.reacts{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.rb{border:1px solid var(--line);background:#f8fafc;border-radius:99px;padding:4px 9px;font-size:14px;display:flex;gap:4px;align-items:center}
+.rb b{font-size:12px;color:#475569}.rb.on{background:#dbeafe;border-color:#93c5fd}
+.cbtn{margin-left:auto;font-size:13px;color:#475569;font-weight:600;padding:5px 4px}
+.cmt{display:flex;gap:8px;padding:9px 0;border-top:1px solid #f1f5f9}
+.cmt .b{flex:1;min-width:0}.cmt p{margin:1px 0 0;white-space:pre-wrap;word-break:break-word;font-size:14px}
+.empty{text-align:center;color:#94a3b8;padding:36px 0;font-size:14px}
+.mcard{border-left:4px solid var(--pri2)}
+.mcard h4{margin:0 0 4px;font-size:15px}.mcard p{margin:0 0 10px;font-size:13px;color:#475569;white-space:pre-wrap}
+.gst{display:flex;gap:6px;margin-bottom:10px}
+.gst span{flex:1;text-align:center;font-size:12px;font-weight:700;border-radius:8px;padding:6px 0;background:#f1f5f9;color:#94a3b8}
+.gst span.y{background:#d1fae5;color:#047857}
+.bingo{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;margin:10px 0}
+.bingo button{aspect-ratio:1;border-radius:10px;background:#f1f5f9;border:1px dashed #cbd5e1;font-size:12.5px;font-weight:600;color:#475569;padding:6px;position:relative;overflow:hidden;word-break:keep-all}
+.bingo button img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.bingo button em{position:absolute;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);color:#fff;font-style:normal;font-size:10.5px;padding:2px 3px}
+.bar{position:relative;display:block;width:100%;text-align:left;border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-bottom:6px;overflow:hidden;background:#f8fafc;font-weight:600;font-size:14px}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:#dbeafe;z-index:0}.bar span{position:relative;z-index:1}.bar b{position:relative;z-index:1;float:right;color:#475569;font-size:13px}
+.bar.on{border-color:var(--pri2)}.bar.on i{background:#bfdbfe}
+.tl{position:relative;padding-left:18px;margin:0 0 14px}
+.tl::before{content:"";position:absolute;left:4px;top:8px;width:9px;height:9px;border-radius:50%;background:var(--pri2)}
+.tl::after{content:"";position:absolute;left:8px;top:20px;bottom:-14px;width:1.5px;background:var(--line)}
+.tl:last-child::after{display:none}
+.tl.cur::before{background:var(--ok);box-shadow:0 0 0 4px #d1fae5}
+.tl.cur .tt{color:var(--ok)}
+.tl .tt{font-size:13px;font-weight:700;color:var(--pri)}.tl .ti{font-weight:600;font-size:14.5px}.tl .su{font-size:12.5px;color:var(--sub)}
+.tl ul{list-style:none;margin:6px 0 0;padding:9px 11px;background:#fff1f2;border-radius:10px;font-size:12.5px}
+.tl li{display:flex;gap:8px;padding:2px 0}.tl li b{width:42px;flex:none}
+.gl button{display:flex;width:100%;align-items:center;gap:10px;padding:13px 4px;border-bottom:1px solid #f1f5f9;font-weight:600;text-align:left}
+.gl button:last-child{border:0}.gl i{font-style:normal;font-size:20px}
+#sheet,#viewer,#join{position:absolute;inset:0;z-index:50;display:none}
+#sheet.on{display:flex;align-items:flex-end;background:rgba(15,23,42,.55)}
+.sh{background:var(--card);width:100%;max-height:92%;border-radius:20px 20px 0 0;display:flex;flex-direction:column}
+.sh .top{display:flex;align-items:center;padding:14px 16px 8px}
+.sh .top h2{margin:0;font-size:17px;flex:1}
+#shB{flex:1;min-height:0;overflow-y:auto;padding:4px 16px 16px}
+#shF{border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+#viewer.on{display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.93);flex-direction:column}
+#viewer img,#viewer video{max-width:100%;max-height:88%;object-fit:contain}
+#viewer .x{position:absolute;top:calc(10px + env(safe-area-inset-top));right:12px;color:#fff;font-size:28px;z-index:2;width:44px;height:44px}
+#viewer .jp{color:#fff;font-size:42px;font-weight:700;text-align:center;padding:24px;line-height:1.35}
+#viewer .jp small{display:block;font-size:17px;font-weight:400;opacity:.75;margin-top:16px}
+#viewer .vbar{position:absolute;bottom:calc(14px + env(safe-area-inset-bottom));left:0;right:0;display:flex;gap:10px;justify-content:center}
+#join.on{display:flex;background:linear-gradient(160deg,#1e40af,#4f46e5);align-items:center;justify-content:center;padding:22px}
+#join .box{background:#fff;border-radius:20px;padding:22px;width:100%}
+label.f{display:block;font-size:12.5px;font-weight:600;color:#475569;margin:12px 0 4px}
+.in{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#f8fafc;outline:none}
+textarea.in{resize:vertical}
+.ed{background:#f8fafc}.ed label.f:first-child{margin-top:0}
+.pv{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.pv div{position:relative;width:70px;height:70px;border-radius:10px;overflow:hidden;background:#0f172a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;text-align:center}
+.pv img{width:100%;height:100%;object-fit:cover}
+.pv button{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.6);color:#fff;font-size:12px;line-height:20px}
+.prog{height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;margin-top:10px}
+.prog i{display:block;height:100%;background:var(--pri2);width:0;transition:width .2s}
+.hint{font-size:12.5px;color:var(--sub);margin-top:6px}
+.warnbox{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:10px 12px;font-size:13px;color:#92400e;margin-top:10px;white-space:pre-wrap}
+#toast{position:absolute;left:50%;transform:translateX(-50%);bottom:90px;background:#0f172a;color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;z-index:99;opacity:0;pointer-events:none;transition:opacity .25s;max-width:86%;text-align:center}
+#toast.on{opacity:1}
+.ribbon{background:#fef3c7;color:#92400e;font-size:12px;text-align:center;padding:4px;font-weight:600}
+.ph{background:#fdf2f8;border-radius:10px;padding:10px 12px;margin-bottom:8px;display:flex;gap:8px;align-items:center}
+.ph .b{flex:1}.ph b{display:block;font-size:14px}.ph span{font-size:12.5px;color:#475569}
+.ck{display:flex;gap:10px;align-items:center;padding:11px;background:#f8fafc;border-radius:10px;margin-bottom:8px}
+.ck input{width:20px;height:20px;flex:none}
+.ct{display:flex;align-items:center;gap:10px;background:#f8fafc;border-radius:12px;padding:11px;margin-bottom:8px}
+.ct .b{flex:1;min-width:0}.ct b{display:block;font-size:14px}.ct span{font-size:12px;color:var(--sub)}.ct .cp{color:var(--pri);font-weight:600;font-size:13.5px;text-align:left;word-break:break-all}
+.mem{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f1f5f9}.mem:last-child{border:0}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px;margin-top:8px}.kv span{color:var(--sub)}
+.bell{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid #f1f5f9;width:100%;text-align:left}
+.bell i{font-style:normal;font-size:20px}.bell.new{background:#eff6ff;margin:0 -16px;padding:11px 16px;width:calc(100% + 32px)}
+ul.pl{margin:0;padding-left:18px}ul.pl li{margin-bottom:8px}
+.adm{border:1px dashed #94a3b8;background:#f8fafc}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="ribbon" id="ribbon" hidden></div>
+  <header>
+    <h1>히로시마 교류 🇯🇵<small>김천중앙고등학교 · 12.21 – 12.24</small></h1>
+    <button class="hbtn" data-act="bell" aria-label="알림">🔔<span class="badge" id="bellBadge"></span></button>
+    <button class="hbtn sos" data-act="sos" aria-label="비상 연락">📞</button>
+  </header>
+  <main>
+    <section class="view on" id="v-home"></section>
+    <section class="view" id="v-talk">
+      <div class="seg">
+        <button class="on" data-act="pane" data-p="chat">채팅<span class="badge" id="chatBadge"></span></button>
+        <button data-act="pane" data-p="feed">사진·영상<span class="badge" id="feedBadge"></span></button>
+      </div>
+      <div class="pane on" id="p-chat">
+        <div class="chips" id="roomChips"></div>
+        <div id="chatList"></div>
+        <div class="inbar">
+          <button class="ibtn" data-act="chatImg" aria-label="사진">📷</button>
+          <textarea id="chatIn" rows="1" placeholder="메시지 입력"></textarea>
+          <button class="ibtn send" data-act="chatSend" aria-label="보내기">➤</button>
+        </div>
+      </div>
+      <div class="pane" id="p-feed">
+        <div class="chips" id="feedChips"></div>
+        <div id="feedWrap"><div id="feedList"></div><div id="albumBox"></div><div class="empty" id="feedEmpty">아직 올라온 글이 없어요.<br>첫 사진을 올려 보세요!</div></div>
+        <button class="fab" data-act="compose" data-tag="feed">＋ 글쓰기</button>
+      </div>
+    </section>
+    <section class="view" id="v-mission"></section>
+    <section class="view" id="v-members"></section>
+    <section class="view" id="v-guide"></section>
+  </main>
+  <nav>
+    <button class="on" data-act="tab" data-t="home"><i>🏠</i>홈</button>
+    <button data-act="tab" data-t="talk"><i>💬<span class="badge" id="talkBadge"></span></i>소통</button>
+    <button data-act="tab" data-t="mission"><i>🎯</i>미션</button>
+    <button data-act="tab" data-t="members"><i>👥</i>멤버</button>
+    <button data-act="tab" data-t="guide"><i>🗓️</i>일정·안내</button>
+  </nav>
+
+  <div id="sheet" data-act="sheetBg">
+    <div class="sh">
+      <div class="top"><h2 id="shT"></h2><button class="hbtn" data-act="closeSheet" aria-label="닫기">✕</button></div>
+      <div id="shB"></div>
+      <div id="shF" hidden></div>
+    </div>
+  </div>
+  <div id="viewer"><button class="x" data-act="closeViewer" aria-label="닫기">✕</button><div id="viewerBody" style="display:contents"></div></div>
+  <div id="join"><div class="box" id="joinBox"></div></div>
+  <div id="toast"></div>
+  <input type="file" id="pickImg" accept="image/*" multiple hidden>
+  <input type="file" id="pickVid" accept="video/*" hidden>
+  <input type="file" id="pickChatImg" accept="image/*" hidden>
+  <input type="file" id="pickBingo" accept="image/*" hidden>
+</div>
+
+<script type="module">
+/* ============================================================
+   ① 설정 — 이 부분만 채우면 됩니다 (설정안내.md 참고)
+   ============================================================ */
+const CONFIG = {
+  firebase: {            // Firebase 콘솔 > 프로젝트 설정 > 내 앱 > SDK 설정에서 복사
+    apiKey: "AIzaSyA6a7y9uBILuy3RpnwB9ysg_UUx3Wr7ujY",
+    authDomain: "international-exchange-app.firebaseapp.com",
+    databaseURL: "https://international-exchange-app-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "international-exchange-app",
+    appId: "1:1078873567564:web:dbfae90d74b2dade411fe9"
+  },
+  cloudinary: {          // Cloudinary 대시보드의 Cloud name, 직접 만든 Unsigned 업로드 프리셋 이름
+    cloudName: "r11w3va4",
+    uploadPreset: "r4p0tsn1"
+  },
+  yenRate: 8.5           // 1엔 = 몇 원 (앱에서도 바꿀 수 있음)
+};
+/* ============================================================
+   ② 기본 내용 — 운영 담당이 앱 안에서 고치면 그 내용이 우선합니다.
+   (필수 일본어만 여기에서 직접 고칩니다)
+   ============================================================ */
+const DEF = {
+  sched: [
+    { d: '2026-12-21', tab: '12.21(월)', badge: '제1일', title: '출국 및 오노미치 탐방',
+      tip: '- 편한 신발: 오노미치는 비탈길과 계단이 많습니다. 센코지 공원에서 상점가까지 가파른 골목을 걸어 내려옵니다.\n- 고양이 배려: 골목의 길고양이에게 플래시를 터뜨리거나 억지로 안지 않습니다.',
+      items: [
+        { at: '00:30', t: '00:30', ti: '김천 본교 집결 및 출발', su: '⚠️ 20일(일) 밤에서 21일(월)로 넘어가는 0시 30분입니다 · 28인승 리무진' },
+        { at: '04:45', t: '04:45 – 07:45', ti: '인천공항 도착 / 수속 / 출국 (7C1615)', su: '' },
+        { at: '09:30', t: '09:30', ti: '히로시마 국제공항 도착', su: '' },
+        { at: '13:00', t: '오후', ti: '오노미치 시내 / 센코지 공원 관광', su: '항구도시, 혼도리 상점가 자유탐방' },
+        { at: '18:30', t: '18:30', ti: '석식 후 호텔 체크인', su: '🏨 그랜드 프린스 호텔 히로시마 (2인 1실)' } ] },
+    { d: '2026-12-22', tab: '12.22(화) ⭐', badge: '제2일 · 학교 교류', title: '가베고등학교 교류 & 평화공원',
+      tip: '- 학교 예절: 복도에서 만나는 선생님께 가볍게 목례하며 "곤니치와"라고 인사합니다.\n- 평화기념공원·위령비: 원폭 희생자를 추모하는 공간입니다. 큰 소리로 떠들거나 장난치지 않습니다.\n- 긴타이쿄: 겨울에는 나무 바닥이 미끄럽습니다. 다리 위에서 뛰지 않습니다.\n- 로프웨이: 새치기 없이 질서를 지킵니다.',
+      items: [
+        { at: '07:00', t: '07:00 – 08:00', ti: '조식 후 가베고등학교로 이동 (약 50분)', su: '' },
+        { at: '08:30', t: '08:30 – 12:50', ti: '가베고등학교 세부 일정', su: '', list: [['08:30', '입구 맞이 및 일정 안내'], ['08:55', '체육관 개회 및 환영식 (교장, 학생회장)'], ['09:05', 'K-문화 교류 공연 (PPT 발표)'], ['09:35', '체육관에서 버디(짝꿍) 만나기'], ['09:50', '1교시 수업 참관 (버디와 함께)'], ['10:50', '2교시 수업 참관'], ['11:40', 'SHR(홈룸) 작별 인사'], ['12:00', '동아리 활동(카구라, 다도 등) 참관'], ['12:50', '가베고등학교 출발']] },
+        { at: '13:30', t: '오후', ti: '히로시마 문화체험', su: '한국인 위령비, 평화기념공원 방문' },
+        { at: '15:30', t: '이와쿠니 이동', ti: '긴타이쿄, 이와쿠니 성 (로프웨이 탑승)', su: '' },
+        { at: '18:30', t: '석식 후', ti: '호텔 귀환 및 휴식', su: '' } ] },
+    { d: '2026-12-23', tab: '12.23(수)', badge: '제3일', title: '대학 탐방 & 미야지마',
+      tip: '- 한국교육원: 공공기관 방문입니다. 단정한 복장과 바른 자세로 안내를 경청합니다.\n- 히로시마 대학: 실제 수업과 연구가 이루어지는 곳입니다. 건물 안과 도서관 주변에서는 조용히 합니다.\n- 야생 사슴: 먹이 주기는 금지입니다. 종이 팸플릿이나 여권을 물고 갈 수 있으니 소지품을 잘 챙깁니다.\n- 미센산 방한: 정상 부근은 바닷바람으로 평지보다 훨씬 춥습니다. 두꺼운 겉옷, 장갑, 핫팩을 챙깁니다.',
+      items: [
+        { at: '08:00', t: '08:00 – 09:30', ti: '조식 후 견학지 이동', su: '' },
+        { at: '09:30', t: '오전', ti: '한국교육원 및 히로시마 대학 캠퍼스 투어', su: '' },
+        { at: '13:00', t: '오후', ti: '미야지마로 이동 (선박 탑승)', su: '이쓰쿠시마 신사, 미센산 로프웨이, 오모테산도 상점가 자유시간' },
+        { at: '18:30', t: '석식 후', ti: '히로시마로 이동(약 1시간) 및 호텔 휴식', su: '' } ] },
+    { d: '2026-12-24', tab: '12.24(목)', badge: '제4일', title: '히로시마성 및 귀국',
+      tip: '- 히로시마성: 천수각은 2026년 3월에 문을 닫아 외관만 관람합니다.\n- 귀국 준비: 체크아웃 전에 여권과 충전기, 객실에 두고 온 물건이 없는지 확인합니다.',
+      items: [
+        { at: '08:00', t: '08:00 – 09:00', ti: '호텔 조식 후 체크아웃', su: '' },
+        { at: '09:00', t: '09:00 – 10:30', ti: '히로시마 성 및 문화체험', su: '' },
+        { at: '10:30', t: '10:30 – 13:30', ti: '공항으로 이동 및 수속 준비', su: '' },
+        { at: '16:15', t: '16:15 – 18:00', ti: '히로시마 출발, 인천 도착 (7C1618)', su: '' },
+        { at: '22:00', t: '22:00', ti: '김천 본교 도착 및 해산', su: '' } ] }
+  ],
+  missions: [
+    { id: 'm1', icon: '🤝', title: '가베고 버디 교류', when: '22일', desc: '버디와 함께 수업을 듣고 한국 학교생활과의 차이점 3가지를 찾아 인증샷과 함께 기록하기. 직접 써 본 일본어도 적어 주세요.', ph: '1. 차이점 첫 번째…\n2. 차이점 두 번째…\n3. 차이점 세 번째…\n\n써 본 일본어: …' },
+    { id: 'm2', icon: '🎤', title: '평화 릴레이 인터뷰', when: '22일', desc: '평화기념공원과 한국인 위령비 방문 후, 조원 4명이 돌아가며 느낀 점을 1분 내외 릴레이 인터뷰 영상으로 제출하기.', ph: '영상에 대한 한 줄 소개 (선택)' },
+    { id: 'm3', icon: '🎬', title: '문화탐방 숏폼', when: '자유', desc: '오노미치 상점가 또는 미야지마를 배경으로 세계시민동아리의 특색을 살린 숏폼 영상 만들기. 1분 이내, 편집 앱에서 720p로 내보내면 잘 올라갑니다.', ph: '영상 제목이나 한 줄 소개 (선택)' }
+  ],
+  guide: {
+    check: '여권 (가장 중요!)\n단정하고 편안한 복장 (학교 방문용 포함)\n두꺼운 겉옷, 장갑, 핫팩 (12월 방한용)\n편안한 운동화 (많이 걷습니다)\n110V 어댑터(돼지코) 및 보조배터리\n세면도구 및 상비약\n접이식 우산\n환전한 엔화 및 개인 용돈\n필기도구 및 수첩',
+    rules: '- 시간 엄수: 집합 시간을 반드시 지킵니다. (5분 전 대기)\n- 무단 이탈 금지: 개인 행동을 금하며, 이동할 때는 조별로 함께 다닙니다.\n- 여권 관리: 여권은 항상 본인이 잘 보관합니다.\n- 학교 방문 예절: 단정한 복장과 바른 태도를 유지하고 적극적으로 교류에 참여합니다.\n- 버스 안전: 전용 버스에서는 안전벨트를 꼭 매고, 쓰레기는 본인이 챙겨서 내립니다.\n- 비상 상황: 길을 잃거나 문제가 생기면 즉시 조장과 선생님께 연락합니다. (오른쪽 위 📞)',
+    manner: '# 식사 예절\n- 식사 전 "이타다키마스", 식사 후 "고치소-사마데시타"라고 인사합니다.\n- 젓가락으로 음식을 주고받지 않습니다.\n- 밥그릇과 국그릇은 손에 들고 먹는 것이 일반적입니다.\n# 호텔 생활\n- 밤늦게 복도에 모여 떠들거나 다른 방 문을 크게 두드리지 않습니다.\n- 조식 뷔페에서는 공용 집게를 쓰고, 먹을 만큼만 여러 번 나누어 담아 남기지 않습니다.\n- 객실 비품을 훼손하지 않습니다.\n# 공공장소\n- 대중교통과 실내에서는 통화를 삼가고 조용히 합니다.\n- 줄서기 문화가 철저하므로 새치기하지 않습니다.\n- 걸어 다니며 음식을 먹는 것은 삼갑니다.',
+    spots: '- 히로시마: 혼슈 서남부의 평화의 도시이자 물의 도시. 원자폭탄의 아픔을 딛고 평화를 상징하는 도시가 되었습니다. 히로시마풍 오코노미야키와 굴 요리가 유명합니다.\n- 가베고등학교: 히로시마 현립 고등학교. 다도·카구라(전통 무용) 등 동아리 활동이 활발하며, 버디(짝꿍)와 함께 학교생활을 체험합니다.\n- 오노미치 (1일차): 바다와 언덕이 어우러진 항구도시.\n- 평화기념공원·한국인 위령비 (2일차): 전쟁의 참상을 알리고 평화를 기원하는 공간.\n- 이와쿠니·긴타이쿄 (2일차): 나무로 만든 5연속 아치교와 이와쿠니 성.\n- 미야지마·이쓰쿠시마 신사 (3일차): 바다 위 붉은 도리이로 유명한 신사. 섬 곳곳에 사슴이 삽니다.\n- 히로시마성 (4일차): 천수각은 노후화로 2026년 3월에 문을 닫아 외관만 볼 수 있습니다.'
+  },
+  places: [
+    { name: '🏨 그랜드 프린스 호텔 히로시마 (숙소)', jp: 'グランドプリンスホテル広島\n広島県広島市南区元宇品町23-1', q: 'グランドプリンスホテル広島', note: '3박 모두 이 호텔입니다.' },
+    { name: '🏫 가베고등학교 (2일차)', jp: '広島県立可部高等学校\n広島市安佐北区可部東4丁目27-1', q: '広島県立可部高等学校', note: '' },
+    { name: '센코지 공원 · 오노미치 (1일차)', jp: '千光寺公園（尾道市）', q: '千光寺公園 尾道', note: '' },
+    { name: '오노미치 혼도리 상점가 (1일차)', jp: '尾道本通り商店街', q: '尾道本通り商店街', note: '' },
+    { name: '평화기념공원 · 한국인 위령비 (2일차)', jp: '平和記念公園 韓国人原爆犠牲者慰霊碑', q: '韓国人原爆犠牲者慰霊碑 平和記念公園', note: '' },
+    { name: '긴타이쿄 · 이와쿠니 성 (2일차)', jp: '錦帯橋（岩国市）', q: '錦帯橋', note: '' },
+    { name: '미야지마 · 이쓰쿠시마 신사 (3일차)', jp: '嚴島神社（宮島）', q: '嚴島神社', note: '' },
+    { name: '히로시마성 (4일차)', jp: '広島城', q: '広島城', note: '천수각은 외관만 관람합니다.' },
+    { name: '✈️ 히로시마 공항', jp: '広島空港', q: '広島空港', note: '' }
+  ],
+  sos: [
+    { label: '그랜드 프린스 호텔 히로시마', sub: '숙소 프런트', tel: '+81-82-256-1111' },
+    { label: '주히로시마 대한민국 총영사관', sub: '여권 분실 등 긴급 상황', tel: '+81-82-568-0502' },
+    { label: '영사콜센터 (24시간)', sub: '외교부 해외 안전 상담', tel: '+82-2-3210-0404' },
+    { label: '일본 경찰', sub: '사건·사고', tel: '110' },
+    { label: '일본 구급·화재', sub: '응급 환자, 화재', tel: '119' }
+  ],
+  bingo: '도리이\n사슴\n오코노미야키\n긴타이쿄\n종이학\n노면전차\n버디와 한 컷\n일본어 간판\n조원 전원 점프샷'
+};
+const PHRASES = [
+  ['인사', [['안녕하세요 (아침)', 'おはようございます', '오하요- 고자이마스'], ['안녕하세요 (낮)', 'こんにちは', '곤니치와'], ['처음 뵙겠습니다', 'はじめまして', '하지메마시테'], ['잘 부탁합니다', 'よろしくお願いします', '요로시쿠 오네가이시마스'], ['감사합니다', 'ありがとうございます', '아리가토- 고자이마스']]],
+  ['버디와 대화', [['제 이름은 ○○입니다', '私の名前は○○です', '와타시노 나마에와 ○○데스'], ['만나서 반갑습니다', 'お会いできて嬉しいです', '오아이데키테 우레시이데스'], ['한국에서 왔습니다', '韓国から来ました', '간코쿠카라 키마시타'], ['어떤 K-pop 아이돌을 좋아하나요?', 'どのK-POPアイドルが好きですか', '도노 케이폿푸 아이도루가 스키데스카'], ['같이 사진 찍어도 될까요?', '一緒に写真を撮ってもいいですか', '잇쇼니 샤신오 톳테모 이이데스카'], ['인스타그램 교환할 수 있을까요?', 'インスタ教えてもらえますか', '인스타 오시에테 모라에마스카'], ['이것은 무엇인가요?', 'これは何ですか', '코레와 난데스카'], ['한 번 더 말해 주세요', 'もう一度お願いします', '모- 이치도 오네가이시마스'], ['오늘 정말 즐거웠어요. 감사합니다', '今日は本当に楽しかったです。ありがとうございます', '쿄-와 혼토-니 타노시캇타데스. 아리가토- 고자이마스']]],
+  ['상점·식당', [['죄송합니다 / 저기요', 'すみません', '스미마센'], ['이거 얼마인가요?', 'これ、いくらですか', '코레, 이쿠라데스카'], ['이걸로 주세요', 'これお願いします', '코레 오네가이시마스'], ['봉투는 필요 없어요', '袋はいりません', '후쿠로와 이리마센'], ['화장실은 어디인가요?', 'トイレはどこですか', '토이레와 도코데스카'], ['잘 먹겠습니다', 'いただきます', '이타다키마스'], ['잘 먹었습니다', 'ごちそうさまでした', '고치소-사마데시타']]],
+  ['긴급 상황', [['도와주세요', '助けてください', '타스케테 쿠다사이'], ['길을 잃었어요', '道に迷いました', '미치니 마요이마시타'], ['몸이 안 좋아요', '具合が悪いです', '구아이가 와루이데스']]]
+];
+/* ============================================================ */
+
+const DEMO = !CONFIG.firebase.apiKey;
+const VIDEO_MAX = 95 * 1024 * 1024;
+const EMOJIS = ['❤️', '👍', '😂', '👏', '😮'];
+const GROUPS = { g1: '1조', g2: '2조', g3: '3조', g4: '4조', T: '교사' };
+const GS = ['g1', 'g2', 'g3', 'g4'];
+
+/* ---------- 유틸 ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const ls = { get: (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch { return d; } }, set: (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
+const tsOf = o => (typeof o?.ts === 'number' ? o.ts : Date.now());
+const pad = n => String(n).padStart(2, '0');
+function fmtTime(ts) { const d = new Date(ts), n = new Date(); const hm = `${pad(d.getHours())}:${pad(d.getMinutes())}`; return d.toDateString() === n.toDateString() ? hm : `${d.getMonth() + 1}/${d.getDate()} ${hm}`; }
+const entries = o => Object.entries(o || {}).filter(([, v]) => v && typeof v === 'object').map(([id, v]) => ({ id, ...v }));
+const arr = v => (Array.isArray(v) ? v : Object.values(v || {})).filter(x => x != null);
+const lines = t => String(t || '').split('\n').map(x => x.trim()).filter(Boolean);
+const clone = o => JSON.parse(JSON.stringify(o));
+const safeUrl = u => (/^https?:\/\//i.test(u || '') ? u : '');
+const imgSrc = u => safeUrl(u) || (/^(data:image\/|blob:)/.test(u || '') ? u : '');
+let toastT; function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2800); }
+const av = (name, group) => `<div class="av g${group === 'T' ? 'T' : (group || 'g1').slice(1)}">${esc((name || '?').slice(0, 1))}</div>`;
+function reconcile(box, items, keyOf, htmlOf) {
+  const old = new Map([...box.children].map(n => [n.dataset.k, n])); let prev = null;
+  for (const it of items) {
+    const k = String(keyOf(it)), h = htmlOf(it); let n = old.get(k);
+    if (!n || n._h !== h) { const t = document.createElement('template'); t.innerHTML = h.trim(); const nn = t.content.firstElementChild; nn.dataset.k = k; nn._h = h; if (n) n.replaceWith(nn); n = nn; }
+    old.delete(k);
+    const ref = prev ? prev.nextSibling : box.firstChild; if (ref !== n) box.insertBefore(n, ref); prev = n;
+  }
+  old.forEach(n => n.remove());
+}
+function setHtml(box, html) { if (box._h !== html) { const st = box.scrollTop; box.innerHTML = html; box._h = html; box.scrollTop = st; } }
+/* 간단 서식: "# 제목", "- 항목", "- 이름: 설명" */
+function rich(t) {
+  let out = '', inl = false;
+  for (const l of lines(t)) {
+    if (l.startsWith('#')) { if (inl) { out += '</ul>'; inl = false; } out += `<h3 class="sec">${esc(l.replace(/^#+\s*/, ''))}</h3>`; continue; }
+    if (!inl) { out += '<ul class="pl">'; inl = true; }
+    const b = l.replace(/^[-•]\s*/, ''), m = b.match(/^([^:：\d][^:：]{0,39})[:：]\s+(.+)$/);
+    out += m ? `<li><b>${esc(m[1])}:</b> ${esc(m[2])}</li>` : `<li>${esc(b)}</li>`;
+  }
+  return out + (inl ? '</ul>' : '');
+}
+
+/* ---------- 저장소 연결 (Firebase 또는 체험 모드) ---------- */
+function demoBackend() {
+  let tree = ls.get('demoDB', {}); const subs = [];
+  let id = ls.get('demoUid'); if (!id) { id = 'u' + Math.random().toString(36).slice(2, 10); ls.set('demoUid', id); }
+  const getv = p => p.split('/').reduce((o, k) => (o == null ? o : o[k]), tree);
+  const out = p => { const v = getv(p); return v == null ? {} : clone(v); };
+  const fire = () => { ls.set('demoDB', tree); subs.forEach(([p, cb]) => cb(out(p))); };
+  const setv = (p, v) => { const ks = p.split('/'); let o = tree; for (let i = 0; i < ks.length - 1; i++) { if (o[ks[i]] == null || typeof o[ks[i]] !== 'object') o[ks[i]] = {}; o = o[ks[i]]; } if (v == null) delete o[ks.at(-1)]; else o[ks.at(-1)] = clone(v); fire(); };
+  return { uid: id, on: (p, cb) => { subs.push([p, cb]); cb(out(p)); }, get: async p => getv(p) ?? null,
+    push: async (p, v) => { const k = Date.now().toString(36) + Math.random().toString(36).slice(2, 6); setv(p + '/' + k, v); return k; },
+    set: async (p, v) => setv(p, v), remove: async p => setv(p, null), now: () => Date.now(), conn() {} };
+}
+async function fbBackend() {
+  const base = 'https://www.gstatic.com/firebasejs/11.6.1/';
+  const [{ initializeApp }, { getAuth, signInAnonymously }, d] = await Promise.all([import(base + 'firebase-app.js'), import(base + 'firebase-auth.js'), import(base + 'firebase-database.js')]);
+  const app = initializeApp(CONFIG.firebase), db = d.getDatabase(app);
+  const cred = await signInAnonymously(getAuth(app));
+  return { uid: cred.user.uid,
+    on: (p, cb, last) => { let r = d.ref(db, p); if (last) r = d.query(r, d.limitToLast(last)); d.onValue(r, s => cb(s.val() ?? {}), e => console.warn('[읽기 거부]', p, e.message)); },
+    get: async p => (await d.get(d.ref(db, p))).val(),
+    push: async (p, v) => { const r = d.push(d.ref(db, p)); await d.set(r, v); return r.key; },
+    set: (p, v) => d.set(d.ref(db, p), v), remove: p => d.remove(d.ref(db, p)), now: () => d.serverTimestamp(), conn: cb => d.onValue(d.ref(db, '.info/connected'), s => cb(!!s.val())) };
+}
+
+/* ---------- 상태 ---------- */
+const S = { hook: {}, users: {}, posts: {}, comments: {}, reactions: {}, chat: {}, notices: {}, acks: {}, roll: {}, rollChecks: {}, content: {}, muster: {}, polls: {}, pollVotes: {}, bingo: {}, info: {}, vote: {}, votes: {}, myVote: null, wx: ls.get('wx', null) };
+const CK = ['users', 'posts', 'comments', 'reactions', 'chat', 'notices', 'acks', 'roll', 'rollChecks', 'content', 'muster', 'polls', 'pollVotes', 'bingo', 'info', 'vote'];
+let B = null, uid = null, me = null, tab = 'home', pane = 'chat', room = 'all', feedFilter = 'all', albumG = 'all', day = 0, bingoG = null, sheetLive = null, noticesReady = false;
+const isAdmin = () => me?.role === 'admin';
+const isStaff = () => me?.role === 'admin' || me?.role === 'teacher';
+const staffOf = u => u.role === 'teacher' || u.role === 'admin';
+const students = () => entries(S.users).filter(u => !staffOf(u));
+const C = k => { const v = S.content?.[k]; if (v == null || v === '') return DEF[k]; return Array.isArray(DEF[k]) ? arr(v) : v; };
+const G = k => S.content?.guide?.[k] || DEF.guide[k];
+const missions = () => C('missions');
+const mNo = id => missions().findIndex(m => m.id === id) + 1;
+const myRooms = () => (isStaff() ? ['all', ...GS, ...students().map(u => 'dm_' + u.id).filter(r => r === room || Object.keys(S.chat[r] || {}).length)] : ['all', me.group, 'dm_' + uid]);
+const roomName = r => (r === 'all' ? '전체' : r.startsWith('dm_') ? (isStaff() ? `💬 ${S.users[r.slice(3)]?.name || '학생'}` : '💬 선생님께') : GROUPS[r] + (isStaff() ? '' : ' (우리 조)'));
+const seen = k => ls.get('seen', {})[k] || 0;
+const markSeen = (k, ts) => { const s = ls.get('seen', {}); if (ts > (s[k] || 0)) { s[k] = ts; ls.set('seen', s); } };
+let cacheT; function saveCache() { if (DEMO) return; clearTimeout(cacheT); cacheT = setTimeout(() => { const c = {}; CK.forEach(k => (c[k] = S[k])); ls.set('cache', c); }, 1500); }
+function loadCache() { if (DEMO) return; const c = ls.get('cache'); if (c) CK.forEach(k => c[k] && (S[k] = c[k])); }
+let renderQ = false; function sched() { saveCache(); if (renderQ) return; renderQ = true; requestAnimationFrame(() => { renderQ = false; render(); }); }
+const jstToday = () => new Date(Date.now() + 9 * 3600e3).toISOString().slice(0, 10);
+
+/* ---------- 업로드 ---------- */
+async function shrink(file, max = 1600, q = 0.82) {
+  let src; try { src = await createImageBitmap(file, { imageOrientation: 'from-image' }); } catch { src = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = URL.createObjectURL(file); }); }
+  const sc = Math.min(1, max / Math.max(src.width, src.height)), c = document.createElement('canvas');
+  c.width = Math.round(src.width * sc); c.height = Math.round(src.height * sc); c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
+  return new Promise(res => c.toBlob(b => res(b), 'image/jpeg', q));
+}
+const blobToData = b => new Promise(res => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(b); });
+async function upload(blob, kind, onProg) {
+  if (!CONFIG.cloudinary.cloudName || DEMO) {
+    if (kind === 'video') { if (!DEMO) throw new Error('영상 저장소(Cloudinary)가 아직 설정되지 않았습니다.'); return { u: URL.createObjectURL(blob), bytes: blob.size }; }
+    return { u: await blobToData(await shrink(blob, 700, 0.7)) };
+  }
+  return new Promise((res, rej) => {
+    const fd = new FormData(); fd.append('file', blob, blob.name || (kind === 'video' ? 'video.mp4' : 'photo.jpg')); fd.append('upload_preset', CONFIG.cloudinary.uploadPreset);
+    const x = new XMLHttpRequest(); x.open('POST', `https://api.cloudinary.com/v1_1/${CONFIG.cloudinary.cloudName}/${kind}/upload`);
+    x.upload.onprogress = e => e.lengthComputable && onProg && onProg(e.loaded / e.total);
+    x.onload = () => { try { const r = JSON.parse(x.responseText); if (x.status < 300 && r.secure_url) res({ u: r.secure_url, bytes: r.bytes, fmt: r.format }); else rej(new Error(r.error?.message || '업로드 실패')); } catch (e) { rej(e); } };
+    x.onerror = () => rej(new Error('네트워크가 불안정합니다. 다시 시도해 주세요.')); x.send(fd);
+  });
+}
+const cl = (u, tr) => (u && u.includes('res.cloudinary.com') && u.includes('/upload/') ? u.replace('/upload/', `/upload/${tr}/`) : u);
+const thumb = u => cl(u, 'c_limit,w_800,q_auto,f_auto');
+const full = u => cl(u, 'c_limit,w_1600,q_auto,f_auto');
+const vidUrl = m => (m.fmt === 'webm' ? m.u.replace(/\.webm$/, '.mp4') : m.u);
+/* 용량 초과 영상 압축 시도(지원 기기 한정, 영상 길이만큼 시간이 걸림) */
+function compressVideo(file, onProg) {
+  return new Promise((res, rej) => {
+    const v = document.createElement('video');
+    if (!v.captureStream || !window.MediaRecorder) return rej(new Error('이 기기는 자동 압축을 지원하지 않습니다.'));
+    v.src = URL.createObjectURL(file); v.muted = true; v.playsInline = true;
+    const fail = e => rej(e instanceof Error ? e : new Error('압축 실패'));
+    v.onerror = fail;
+    v.onloadedmetadata = async () => {
+      try {
+        const sc = Math.min(1, 720 / Math.min(v.videoWidth, v.videoHeight)), c = document.createElement('canvas');
+        c.width = Math.round(v.videoWidth * sc / 2) * 2; c.height = Math.round(v.videoHeight * sc / 2) * 2; const ctx = c.getContext('2d');
+        await v.play();
+        const out = c.captureStream(30); v.captureStream().getAudioTracks().forEach(t => out.addTrack(t));
+        const mime = ['video/mp4;codecs=avc1,mp4a.40.2', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'].find(m => MediaRecorder.isTypeSupported(m));
+        const rec = new MediaRecorder(out, { mimeType: mime, videoBitsPerSecond: 2500000, audioBitsPerSecond: 96000 }), chunks = [];
+        rec.ondataavailable = e => e.data.size && chunks.push(e.data);
+        rec.onstop = () => { const b = new Blob(chunks, { type: mime.split(';')[0] }); b.name = 'video.' + (mime.includes('mp4') ? 'mp4' : 'webm'); res(b); };
+        let on = true; const draw = () => { if (!on) return; ctx.drawImage(v, 0, 0, c.width, c.height); onProg && onProg(v.currentTime / (v.duration || 1)); requestAnimationFrame(draw); };
+        v.onended = () => { on = false; rec.stop(); }; rec.start(1000); draw();
+      } catch (e) { fail(e); }
+    };
+  });
+}
+
+/* ---------- 날씨 (Open-Meteo, 무료) ---------- */
+const WX = c => (c === 0 ? ['☀️', '맑음'] : c <= 2 ? ['🌤️', '대체로 맑음'] : c === 3 ? ['☁️', '흐림'] : c <= 48 ? ['🌫️', '안개'] : c <= 57 ? ['🌦️', '이슬비'] : c <= 67 ? ['🌧️', '비'] : c <= 77 ? ['❄️', '눈'] : c <= 82 ? ['🌧️', '소나기'] : c <= 86 ? ['🌨️', '눈'] : ['⛈️', '뇌우']);
+async function fetchWeather() {
+  if (S.wx && Date.now() - S.wx.at < 3 * 3600e3) return;
+  try {
+    const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=34.3853&longitude=132.4553&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FTokyo&forecast_days=2');
+    const j = await r.json(); if (!j.daily?.time) return;
+    S.wx = { at: Date.now(), cur: Math.round(j.current?.temperature_2m), code: j.current?.weather_code, days: j.daily.time.map((t, i) => ({ t, code: j.daily.weather_code[i], hi: Math.round(j.daily.temperature_2m_max[i]), lo: Math.round(j.daily.temperature_2m_min[i]), pop: j.daily.precipitation_probability_max?.[i] })) };
+    ls.set('wx', S.wx); sched();
+  } catch {}
+}
+
+/* ---------- 공통 조각 ---------- */
+function postCard(p, detail) {
+  const rs = S.reactions[p.id] || {}, mine = rs[uid]?.e, cs = Object.keys(S.comments[p.id] || {}).length;
+  const media = arr(p.media), n = mNo(p.tag);
+  const mh = media.length ? `<div class="media n${Math.min(media.length, 5)}">${media.map((x, i) => x.t === 'v'
+    ? `<button class="vtile" data-act="view" data-pid="${p.id}" data-i="${i}"><video src="${esc(vidUrl(x))}#t=0.5" preload="metadata" muted playsinline></video><span>▶</span></button>`
+    : `<img src="${esc(thumb(x.u))}" loading="lazy" alt="" data-act="view" data-pid="${p.id}" data-i="${i}">`).join('')}</div>` : '';
+  const link = safeUrl(p.link);
+  return `<div class="card post">
+    <div class="head">${av(p.name, p.group)}<div><div class="nm">${esc(p.name)}<span class="gtag">${GROUPS[p.group] || ''}</span>${n ? `<span class="mtag">🎯 미션 ${n}</span>` : ''}</div><div class="meta">${fmtTime(tsOf(p))}</div></div></div>
+    ${p.text ? `<p class="txt">${esc(p.text)}</p>` : ''}${mh}
+    ${link ? `<a class="linkbox" href="${esc(link)}" target="_blank" rel="noopener">🔗 ${esc(link)}</a>` : ''}
+    <div class="reacts">${EMOJIS.map(e => { const c = Object.values(rs).filter(r => r.e === e).length; return `<button class="rb ${mine === e ? 'on' : ''}" data-act="react" data-pid="${p.id}" data-e="${e}">${e}${c ? `<b>${c}</b>` : ''}</button>`; }).join('')}
+    ${detail ? '' : `<button class="cbtn" data-act="post" data-pid="${p.id}">💬 댓글${cs ? ' ' + cs : ''}</button>`}</div>
+  </div>`;
+}
+const sortedPosts = () => entries(S.posts).sort((a, b) => tsOf(b) - tsOf(a));
+
+/* ---------- 알림 ---------- */
+function bellItems() {
+  const it = [];
+  entries(S.notices).forEach(n => n.uid !== uid && it.push({ ts: tsOf(n), ic: '📢', tx: `새 공지: ${n.text}`, go: 'home' }));
+  entries(S.roll).forEach(r => r.open && r.uid !== uid && it.push({ ts: tsOf(r), ic: '🙋', tx: `인원 보고: ${r.title}`, go: 'home' }));
+  entries(S.polls).forEach(p => p.open && p.uid !== uid && it.push({ ts: tsOf(p), ic: '📊', tx: `투표: ${p.q}`, go: 'home' }));
+  if (S.muster?.at && S.muster.uid !== uid) it.push({ ts: tsOf(S.muster), ic: '⏰', tx: `집합 안내: ${S.muster.time} ${S.muster.place}`, go: 'home' });
+  if (S.vote?.mission && S.vote.uid !== uid) it.push({ ts: tsOf(S.vote), ic: '🏆', tx: S.vote.open ? '숏폼 투표가 시작되었습니다' : '숏폼 투표 결과가 공개되었습니다', go: 'mission' });
+  entries(S.posts).forEach(p => {
+    if (p.uid === uid) {
+      entries(S.comments[p.id]).forEach(c => c.uid !== uid && it.push({ ts: tsOf(c), ic: '💬', tx: `${c.name}님의 댓글: ${c.text}`, pid: p.id }));
+      Object.entries(S.reactions[p.id] || {}).forEach(([u, r]) => u !== uid && it.push({ ts: tsOf(r), ic: r.e, tx: `${r.name}님이 내 글에 반응했어요`, pid: p.id }));
+    } else if (isStaff() && mNo(p.tag)) it.push({ ts: tsOf(p), ic: '🎯', tx: `${GROUPS[p.group]} ${p.name} · 미션 ${mNo(p.tag)} 제출`, pid: p.id });
+  });
+  return it.sort((a, b) => b.ts - a.ts).slice(0, 60);
+}
+function renderBadges() {
+  const bn = bellItems().filter(i => i.ts > seen('bell')).length; $('#bellBadge').textContent = bn || '';
+  let cn = 0; myRooms().forEach(r => { cn += entries(S.chat[r]).filter(m => m.uid !== uid && tsOf(m) > seen('chat_' + r)).length; });
+  const fn = entries(S.posts).filter(p => p.uid !== uid && tsOf(p) > seen('feed')).length;
+  $('#chatBadge').textContent = cn || ''; $('#feedBadge').textContent = fn || ''; $('#talkBadge').textContent = (cn + fn) || '';
+}
+
+/* ---------- 홈 ---------- */
+function flatSched() { const a = []; C('sched').forEach((dd, di) => arr(dd.items).forEach(it => { a.push({ di, when: new Date(`${dd.d}T${it.at}:00+09:00`), label: it.t, ti: it.ti, su: it.su }); arr(it.list).forEach(l => a.push({ di, when: new Date(`${dd.d}T${l[0]}:00+09:00`), label: l[0], ti: l[1], sub: true })); })); return a.filter(x => !isNaN(x.when)).sort((x, y) => x.when - y.when); }
+function musterCard() {
+  const m = S.muster; if (!m?.at) return ''; const left = m.at - Date.now(); if (left < -20 * 60e3) return '';
+  const mins = Math.ceil(left / 60e3), txt = mins <= 0 ? '지금 집합 시간입니다!' : mins >= 60 ? `${Math.floor(mins / 60)}시간 ${mins % 60}분 남음` : `${mins}분 남음`;
+  return `<div class="card muster"><div class="meta">⏰ 집합 안내</div><div class="big">${esc(m.time)} · ${esc(m.place)}</div><div style="font-weight:700;color:${mins <= 10 ? 'var(--red)' : '#334155'}">${txt}</div>${m.memo ? `<div class="hint">${esc(m.memo)}</div>` : ''}${isAdmin() ? `<div class="row" style="margin-top:8px">${shareBtn(`[히로시마 교류]\n⏰ 집합 안내\n${m.time} · ${m.place}${m.memo ? '\n' + m.memo : ''}\n\n앱에서 확인 👉 ${appUrl()}`)}<button class="btn sm gray" data-act="musterOff">안내 내리기</button></div>` : ''}</div>`;
+}
+function wxCard() {
+  const w = S.wx; if (!w?.days?.length) return ''; const [a, b] = w.days, d = x => `${WX(x.code)[0]} ${x.lo}°/${x.hi}°${x.pop >= 40 ? ` ☔${x.pop}%` : ''}`;
+  return `<div class="card wx"><b>히로시마 ${isNaN(w.cur) ? '' : w.cur + '°'}</b><div class="d">오늘 ${d(a)}${b ? ` · 내일 ${d(b)}` : ''}</div></div>`;
+}
+function rollCards() {
+  const stu = students();
+  return entries(S.roll).filter(r => r.open).sort((a, b) => tsOf(b) - tsOf(a)).map(r => {
+    const ch = S.rollChecks[r.id] || {}; let body, cnt;
+    if (r.kind === 'group') {
+      const gs = GS.filter(g => stu.some(s => s.group === g)); cnt = `${gs.filter(g => ch[g]).length}/${gs.length}조`;
+      const rowsHtml = gs.map(g => `<div class="row" style="margin-top:6px"><b style="font-size:13px;width:32px">${GROUPS[g]}</b>${ch[g] ? `<span class="done">✓ 함께 있음</span><span class="meta">${esc(ch[g].name)} · ${fmtTime(tsOf(ch[g]))}</span>` : `<span class="miss" style="margin:0">미보고</span>`}</div>`).join('');
+      body = isStaff() ? rowsHtml : (ch[me.group] ? `<div class="done">✓ ${GROUPS[me.group]} 보고 완료 <span class="meta">(${esc(ch[me.group].name)})</span></div>` : `<button class="btn ok big full" data-act="rollGroup" data-rid="${r.id}">👥 우리 조 모두 함께 있어요</button><div class="hint">조원이 모두 옆에 있는지 확인한 뒤, 조에서 한 명만 누르면 됩니다.</div>`);
+    } else {
+      cnt = `${stu.filter(s => ch[s.id]).length}/${stu.length}명`;
+      body = isStaff() ? GS.map(g => { const gs = stu.filter(s => s.group === g); if (!gs.length) return ''; return `<div class="row wrap" style="margin-top:6px"><b style="font-size:13px;width:32px">${GROUPS[g]}</b>${gs.map(s => ch[s.id] ? `<span class="btn sm ok">✓ ${esc(s.name)}${ch[s.id].by ? ' (대리)' : ''}</span>` : (isAdmin() ? `<button class="btn sm red" data-act="rollFor" data-rid="${r.id}" data-uid="${s.id}">${esc(s.name)}</button>` : `<span class="btn sm red">${esc(s.name)}</span>`)).join('')}</div>`; }).join('') + (isAdmin() ? '<div class="hint">빨간 이름을 누르면 대신 체크됩니다.</div>' : '')
+        : (ch[uid] ? `<div class="done">✓ 확인 완료</div>` : `<button class="btn ok big full" data-act="rollMe" data-rid="${r.id}">🛏️ 방에 있어요</button>`);
+    }
+    return `<div class="card" style="border-left:4px solid var(--ok)"><div class="row"><b>${r.kind === 'group' ? '👥' : '🛏️'} ${esc(r.title)}</b><span class="sp"></span><b style="color:var(--ok)">${cnt}</b></div><div class="meta">${r.kind === 'group' ? '조별 보고' : '객실 점호'} · ${fmtTime(tsOf(r))} 시작</div><div style="margin-top:10px">${body}</div>${isAdmin() ? `<button class="btn gray sm" style="margin-top:10px" data-act="rollClose" data-rid="${r.id}">마감하기</button>` : ''}</div>`;
+  }).join('');
+}
+function pollCards() {
+  return entries(S.polls).sort((a, b) => tsOf(b) - tsOf(a)).slice(0, 5).map(p => {
+    const pv = S.pollVotes[p.id] || {}, vals = Object.values(pv), tot = vals.length, mine = pv[uid], opts = arr(p.opts);
+    return `<div class="card"><div class="meta">📊 투표 · ${fmtTime(tsOf(p))}${p.open ? '' : ' · 마감'}</div><b>${esc(p.q)}</b><div style="margin-top:8px">${opts.map((o, i) => { const c = vals.filter(v => v === i).length; return `<button class="bar ${mine === i ? 'on' : ''}" ${p.open ? `data-act="pollVote" data-id="${p.id}" data-i="${i}"` : 'disabled'}><i style="width:${tot ? Math.round(c / tot * 100) : 0}%"></i><span>${mine === i ? '✓ ' : ''}${esc(o)}</span><b>${c}</b></button>`; }).join('')}</div><div class="meta">${tot}명 참여${p.open ? ' · 다시 누르면 바꿀 수 있어요' : ''}</div>${isAdmin() ? `<div class="row" style="margin-top:8px">${p.open ? `<button class="btn sm gray" data-act="pollClose" data-id="${p.id}">마감</button>` : ''}<button class="btn sm red" data-act="pollDel" data-id="${p.id}">삭제</button></div>` : ''}</div>`;
+  }).join('');
+}
+function renderHome() {
+  const now = new Date(), fl = flatSched(), SC = C('sched'); let dd = '', nx = '', tip = '';
+  if (fl.length) {
+    const start = fl[0].when, end = new Date(fl.at(-1).when.getTime() + 3600e3);
+    if (now < start) { const n = Math.ceil((new Date(SC[0].d + 'T00:00:00+09:00') - now) / 864e5); dd = n <= 0 ? '오늘 밤 출발!' : `출발까지 D-${n}`; nx = `<div class="nx"><div class="t">첫 일정 · ${esc(SC[0].tab)} ${esc(fl[0].label)}</div><b>${esc(fl[0].ti)}</b><div class="t">${esc(fl[0].su || '')}</div></div>`; }
+    else if (now > end) dd = '모든 일정이 끝났습니다. 수고했어요!';
+    else {
+      const cur = [...fl].reverse().find(x => x.when <= now), next = fl.find(x => x.when > now), di = cur ? cur.di : 0; dd = `${di + 1}일차 진행 중`;
+      nx = (cur ? `<div class="now"><div class="t">지금 · ${esc(cur.label)}</div><b style="color:var(--ok)">${esc(cur.ti)}</b></div>` : '') + (next ? `<div class="nx"><div class="t">다음 · ${esc(String(SC[next.di].tab).slice(0, 8))} ${esc(next.label)}</div><b>${esc(next.ti)}</b>${next.su ? `<div class="t">${esc(next.su)}</div>` : ''}</div>` : '');
+      const td = SC.find(x => x.d === jstToday()) || SC[di]; if (td?.tip) tip = `<div class="card tipbox"><b style="font-size:13.5px">💡 오늘의 유의사항</b><div style="margin-top:6px">${rich(td.tip)}</div></div>`;
+    }
+  }
+  const stu = students(), total = stu.length;
+  const notices = entries(S.notices).sort((a, b) => tsOf(b) - tsOf(a)).slice(0, 8).map(n => {
+    const ak = S.acks[n.id] || {}, cnt = stu.filter(s => ak[s.id]).length, missing = stu.filter(s => !ak[s.id]).map(s => s.name);
+    return `<div class="card notice"><div class="meta">📢 ${esc(n.name)} · ${fmtTime(tsOf(n))}</div><p>${esc(n.text)}</p>
+      ${isStaff() ? `<div class="row"><b style="font-size:13px">확인 ${cnt}/${total}</b><span class="sp"></span>${isAdmin() ? shareBtn(`[히로시마 교류]\n📢 공지\n${n.text}\n\n앱에서 확인 👉 ${appUrl()}`) + `<button class="btn sm red" data-act="delNotice" data-id="${n.id}">삭제</button>` : ''}</div>${missing.length ? `<div class="miss">미확인: ${esc(missing.join(', '))}</div>` : ''}`
+        : (ak[uid] ? `<span class="done">✓ 확인했어요</span>` : `<button class="btn full" data-act="ack" data-id="${n.id}">확인했어요</button>`)}</div>`;
+  }).join('');
+  const polls = pollCards();
+  setHtml($('#v-home'), `
+    ${musterCard()}
+    <div class="card hero"><h2>${esc(me.name)}님, 세계시민으로 성장하는 여정 ✈️</h2><p>히로시마 가베고등학교 국제교류 및 역사문화 탐방</p><span class="dday">${dd}</span></div>
+    ${wxCard()}
+    ${nx ? `<div class="card next">${nx}</div>` : ''}${tip}
+    ${isAdmin() ? `<div class="card adm"><div class="meta" style="margin-bottom:8px">운영 담당 도구</div><div class="grid2"><button class="btn" data-act="newNotice">📢 공지 쓰기</button><button class="btn red" data-act="newMuster">⏰ 집합 안내</button><button class="btn ok" data-act="newRoll">🙋 인원 보고</button><button class="btn ghost" data-act="newPoll">📊 투표 만들기</button></div><button class="btn sm gray" style="margin-top:10px" data-act="hookSet">✉️ 1:1 채팅 메일 알림 ${S.hook?.url ? '(켜짐)' : '(꺼짐)'}</button></div>` : ''}
+    ${rollCards()}
+    <h3 class="sec">공지</h3>${notices || '<div class="empty" style="padding:18px 0">아직 공지가 없습니다.</div>'}
+    ${polls ? `<h3 class="sec">투표</h3>${polls}` : ''}
+    <h3 class="sec">바로 가기</h3>
+    <div class="grid2">
+      <button class="tile" data-act="guide" data-g="check"><i>🎒</i>준비물 체크</button>
+      <button class="tile" data-act="guide" data-g="places"><i>📍</i>장소 안내</button>
+      <button class="tile" data-act="guide" data-g="lang"><i>🗣️</i>필수 일본어</button>
+      <button class="tile" data-act="guide" data-g="rules"><i>🛡️</i>안전·행동수칙</button>
+    </div>`);
+}
+
+/* ---------- 소통 ---------- */
+function albumHtml() {
+  const items = [];
+  sortedPosts().forEach(p => arr(p.media).forEach((m, i) => items.push({ ts: tsOf(p), g: p.group, kind: m.t, pid: p.id, i, m })));
+  Object.entries(S.bingo || {}).forEach(([g, cells]) => Object.entries(cells || {}).forEach(([k, c]) => c?.u && items.push({ ts: tsOf(c), g, kind: 'i', u: c.u })));
+  const fs = items.filter(x => albumG === 'all' || x.g === albumG).sort((a, b) => b.ts - a.ts);
+  const chips = `<div class="chips" style="padding:0 0 10px">${[['all', '전체'], ...GS.map(g => [g, GROUPS[g]])].map(([k, v]) => `<button class="chip ${albumG === k ? 'on' : ''}" data-act="albumG" data-g="${k}">${v}</button>`).join('')}</div>`;
+  if (!fs.length) return chips + '<div class="empty">아직 사진이 없습니다.</div>';
+  const byDay = new Map(); fs.forEach(x => { const d = new Date(x.ts), k = `${d.getMonth() + 1}월 ${d.getDate()}일`; (byDay.get(k) || byDay.set(k, []).get(k)).push(x); });
+  return chips + [...byDay].map(([k, xs]) => `<h3 class="sec" style="margin-top:8px">${k} <span class="meta">${xs.length}장</span></h3><div class="alb">${xs.map(x => x.pid
+    ? (x.kind === 'v' ? `<button class="vtile" data-act="view" data-pid="${x.pid}" data-i="${x.i}"><video src="${esc(vidUrl(x.m))}#t=0.5" preload="metadata" muted playsinline></video><span>▶</span></button>` : `<img src="${esc(thumb(x.m.u))}" loading="lazy" alt="" data-act="view" data-pid="${x.pid}" data-i="${x.i}">`)
+    : `<img src="${esc(thumb(x.u))}" loading="lazy" alt="" data-act="viewImg" data-u="${esc(x.u)}">`).join('')}</div>`).join('');
+}
+function renderTalk() {
+  document.querySelectorAll('.seg button').forEach(b => b.classList.toggle('on', b.dataset.p === pane));
+  $('#p-chat').classList.toggle('on', pane === 'chat'); $('#p-feed').classList.toggle('on', pane === 'feed');
+  if (pane === 'chat') {
+    if (!myRooms().includes(room)) room = 'all';
+    setHtml($('#roomChips'), myRooms().map(r => { const n = r === room ? 0 : entries(S.chat[r]).filter(m => m.uid !== uid && tsOf(m) > seen('chat_' + r)).length; return `<button class="chip ${r === room ? 'on' : ''}" data-act="room" data-r="${r}">${esc(roomName(r))}${n ? `<span class="badge">${n}</span>` : ''}</button>`; }).join(''));
+    $('#chatIn').placeholder = room.startsWith('dm_') ? (isStaff() ? '학생에게 답장 (인솔 교사 모두가 봅니다)' : '선생님께 보내기 (인솔 교사 모두가 봅니다)') : '메시지 입력';
+    const list = $('#chatList'), msgs = entries(S.chat[room]).sort((a, b) => tsOf(a) - tsOf(b));
+    const near = list.scrollHeight - list.scrollTop - list.clientHeight < 120, before = list.children.length;
+    reconcile(list, msgs, m => m.id, m => { const mine = m.uid === uid, img = imgSrc(m.img);
+      return `<div class="msg ${mine ? 'me' : ''}">${mine ? '' : av(m.name, m.group)}<div style="min-width:0;max-width:74%">${mine ? '' : `<div class="who">${esc(m.name)}<span class="gtag">${GROUPS[m.group] || ''}</span></div>`}<div class="bub">${img ? `<img src="${esc(thumb(img))}" alt="" data-act="viewImg" data-u="${esc(img)}">` : ''}${esc(m.text || '')}</div></div><div class="tm">${fmtTime(tsOf(m))}${mine || isAdmin() ? `<br><button class="del" data-act="delMsg" data-id="${m.id}">삭제</button>` : ''}</div></div>`; });
+    if (near || before === 0) list.scrollTop = list.scrollHeight;
+    if (msgs.length) markSeen('chat_' + room, Math.max(...msgs.map(tsOf)));
+  } else {
+    const fs = [['all', '전체'], ['mine', isStaff() ? '교사 글' : '우리 조'], ['mission', '미션 제출'], ['album', '🖼️ 앨범']];
+    setHtml($('#feedChips'), fs.map(([k, v]) => `<button class="chip ${feedFilter === k ? 'on' : ''}" data-act="ff" data-f="${k}">${v}</button>`).join(''));
+    const all = sortedPosts(), album = feedFilter === 'album';
+    const ps = album ? [] : all.filter(p => feedFilter === 'all' || (feedFilter === 'mine' ? p.group === me.group : mNo(p.tag) > 0));
+    reconcile($('#feedList'), ps, p => p.id, p => postCard(p)); setHtml($('#albumBox'), album ? albumHtml() : '');
+    $('#feedEmpty').style.display = album || ps.length ? 'none' : '';
+    if (all.length) markSeen('feed', Math.max(...all.map(tsOf)));
+  }
+}
+
+/* ---------- 미션 · 빙고 · 숏폼 투표 ---------- */
+const LINES = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+const bcell = (g, i) => S.bingo?.[g]?.['c' + i];
+const bstat = g => { const f = [...Array(9)].map((_, i) => !!bcell(g, i)?.u); return { n: f.filter(Boolean).length, l: LINES.filter(L => L.every(i => f[i])).length }; };
+function bingoHtml() {
+  const th = lines(C('bingo')).slice(0, 9), g = bingoG || (GS.includes(me.group) ? me.group : 'g1'), mine = g === me.group, st = bstat(g);
+  return `<h3 class="sec">포토 빙고 📸</h3><div class="card"><div class="chips" style="padding:0 0 4px">${GS.map(x => { const s = bstat(x); return `<button class="chip ${x === g ? 'on' : ''}" data-act="bingoG" data-g="${x}">${GROUPS[x]}${x === me.group ? ' (우리)' : ''} · ${s.l}줄</button>`; }).join('')}</div>
+    <div class="bingo">${th.map((t, i) => { const c = bcell(g, i); return `<button data-act="bingoCell" data-g="${g}" data-i="${i}">${c?.u ? `<img src="${esc(thumb(c.u))}" alt="" loading="lazy"><em>✓ ${esc(t)}</em>` : esc(t)}</button>`; }).join('')}</div>
+    <div class="row"><b>${GROUPS[g]} · ${st.n}/9칸 · 빙고 ${st.l}줄</b><span class="sp"></span>${isAdmin() ? '<button class="btn sm gray" data-act="editBingo">주제 수정</button>' : ''}</div>
+    <div class="hint">${mine ? '칸을 눌러 주제에 맞는 인증샷을 올리세요. 가로·세로·대각선 한 줄이 채워지면 빙고!' : '다른 조의 빙고판입니다. 사진을 눌러 볼 수 있어요.'}</div></div>`;
+}
+function voteHtml() {
+  const v = S.vote || {}, ms = missions();
+  if (!v.mission) return isAdmin() ? `<h3 class="sec">숏폼 투표 🏆</h3><div class="card adm"><div class="hint" style="margin:0 0 8px">조별 영상 중 최고를 뽑습니다. 자기 조에는 투표할 수 없고, 마감 전에는 득표수가 보이지 않습니다.</div><div class="row"><select class="in" id="voteM">${ms.map((m, i) => `<option value="${m.id}" ${i === ms.length - 1 ? 'selected' : ''}>미션 ${i + 1}. ${esc(m.title)}</option>`).join('')}</select><button class="btn" data-act="voteOpen" style="flex:none">투표 시작</button></div></div>` : '';
+  const cands = sortedPosts().filter(p => p.tag === v.mission).reverse(), counts = {}; Object.values(S.votes || {}).forEach(pid => typeof pid === 'string' && (counts[pid] = (counts[pid] || 0) + 1));
+  const showCnt = !v.open || isAdmin(), tot = Object.values(counts).reduce((a, b) => a + b, 0), max = Math.max(0, ...cands.map(p => counts[p.id] || 0));
+  const list = (v.open ? cands : [...cands].sort((a, b) => (counts[b.id] || 0) - (counts[a.id] || 0))).map(p => {
+    const c = counts[p.id] || 0, own = p.group === me.group, m0 = arr(p.media)[0], pick = S.myVote === p.id;
+    return `<div class="row" style="padding:8px 0;border-top:1px solid #f1f5f9">${av(p.name, p.group)}<div style="flex:1;min-width:0"><b style="font-size:14px">${!v.open && c === max && c > 0 ? '🥇 ' : ''}${GROUPS[p.group]} · ${esc(p.name)}</b><div class="meta" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(p.text || (m0 ? '영상' : '링크 제출'))}</div></div>
+      <button class="btn sm ghost" data-act="post" data-pid="${p.id}">보기</button>${showCnt ? `<b style="min-width:34px;text-align:right">${c}표</b>` : ''}${v.open ? (own ? '<span class="meta">우리 조</span>' : `<button class="btn sm ${pick ? 'ok' : ''}" data-act="voteCast" data-pid="${p.id}">${pick ? '✓ 선택' : '투표'}</button>`) : ''}</div>`;
+  }).join('') || '<div class="empty" style="padding:18px 0">아직 제출된 영상이 없습니다.</div>';
+  return `<h3 class="sec">숏폼 투표 🏆</h3><div class="card"><div class="row"><b>미션 ${mNo(v.mission) || ''} ${v.open ? '투표 진행 중' : '투표 결과'}</b><span class="sp"></span>${showCnt ? `<span class="meta">총 ${tot}표</span>` : ''}</div>
+    <div class="hint" style="margin-bottom:6px">${v.open ? '한 사람이 한 표, 다른 조 영상에만 투표할 수 있습니다. 마감 전까지 바꿀 수 있어요.' : '투표가 마감되었습니다.'}</div>${list}
+    ${isAdmin() ? `<div class="row" style="margin-top:10px">${v.open ? '<button class="btn sm" data-act="voteClose">마감하고 결과 공개</button>' : ''}<button class="btn sm red" data-act="voteReset">투표 초기화</button></div>` : ''}</div>`;
+}
+function renderMission() {
+  const ps = sortedPosts(), ms = missions();
+  setHtml($('#v-mission'), `<div class="row"><h3 class="sec" style="margin:2px">조별 탐구 미션 🎯</h3><span class="sp"></span>${isAdmin() ? '<button class="btn sm gray" data-act="editMissions">미션 수정</button>' : ''}</div><div class="hint" style="margin:0 2px 12px">4인 1조로 협동해 완수하세요. 조에서 한 명만 제출하면 됩니다.</div>` + ms.map((m, i) => {
+    const subs = ps.filter(p => p.tag === m.id);
+    return `<div class="card mcard"><h4>${esc(m.icon || '🎯')} 미션 ${i + 1}. ${esc(m.title)} ${m.when ? `<span class="gtag">${esc(m.when)}</span>` : ''}</h4><p>${esc(m.desc)}</p>
+      <div class="gst">${GS.map(g => `<span class="${subs.some(p => p.group === g) ? 'y' : ''}">${GROUPS[g]} ${subs.some(p => p.group === g) ? '✓' : '·'}</span>`).join('')}</div>
+      <div class="row"><button class="btn" data-act="compose" data-tag="${esc(m.id)}">제출하기</button>${subs.length ? `<button class="btn ghost" data-act="subs" data-m="${esc(m.id)}">제출물 보기 ${subs.length}</button>` : ''}</div></div>`;
+  }).join('') + bingoHtml() + voteHtml());
+}
+
+/* ---------- 멤버 · 내 정보 ---------- */
+function renderMembers() {
+  const us = entries(S.users).sort((a, b) => String(a.name).localeCompare(String(b.name), 'ko'));
+  const inf = S.info?.[uid] || {}, mates = us.filter(u => u.group === me.group && !staffOf(u) && u.id !== uid).map(u => u.name);
+  const myCard = isStaff() ? '' : `<div class="card" style="border-left:4px solid var(--pri2)"><b>🪪 내 정보</b><div class="kv"><span>방 번호</span><b>${esc(inf.room || '미정')}</b><span>룸메이트</span><b>${esc(inf.mate || '미정')}</b><span>버스 좌석</span><b>${esc(inf.seat || '미정')}</b><span>우리 조</span><b>${GROUPS[me.group]}${mates.length ? ' · ' + esc(mates.join(', ')) : ''}</b></div>${inf.memo ? `<div class="hint">${esc(inf.memo)}</div>` : ''}</div>`;
+  const btn = u => (u.id === uid ? '' : isStaff() ? (!staffOf(u) ? `<button class="btn sm ghost" data-act="dm" data-uid="${u.id}">💬</button>${isAdmin() ? `<button class="btn sm gray" data-act="editInfo" data-uid="${u.id}">정보</button>` : ''}` : '') : (staffOf(u) ? `<button class="btn sm ghost" data-act="dm" data-uid="${uid}">💬 채팅</button>` : ''));
+  const sub = u => { const i = S.info?.[u.id]; return isStaff() && i && (i.room || i.seat) ? `<div class="meta">${i.room ? '방 ' + esc(i.room) : ''}${i.room && i.seat ? ' · ' : ''}${i.seat ? '좌석 ' + esc(i.seat) : ''}</div>` : ''; };
+  const sec = (title, list) => (list.length ? `<h3 class="sec">${title} <span class="meta">${list.length}명</span></h3><div class="card" style="padding:4px 14px">${list.map(u => `<div class="mem">${av(u.name, u.group)}<div><b>${esc(u.name)}</b>${u.id === uid ? '<span class="gtag">나</span>' : ''}${u.role === 'admin' ? '<span class="mtag">운영 담당</span>' : ''}${sub(u)}</div><span class="sp"></span>${btn(u)}</div>`).join('')}</div>` : '');
+  const ts = us.filter(staffOf), st = us.filter(u => !staffOf(u));
+  setHtml($('#v-members'), myCard + `<div class="card"><b>가입한 멤버 ${us.length}명</b><div class="meta">학생 ${st.length}명 · 인솔 교사 ${ts.length}명</div></div>` + sec('인솔 교사', ts) + GS.map(g => sec(GROUPS[g], st.filter(u => u.group === g))).join('') + (isStaff() ? '' : '<div class="hint">선생님 옆의 채팅 버튼을 누르면 인솔 교사 모두가 함께 보는 1:1 방이 열립니다.</div>'));
+}
+
+/* ---------- 일정·안내 ---------- */
+function renderGuide() {
+  const SC = C('sched'); if (day >= SC.length) day = 0; const now = new Date(), dd = SC[day], fl = flatSched().filter(x => !x.sub), cur = [...fl].reverse().find(x => x.when <= now && now - x.when < 864e5);
+  setHtml($('#v-guide'), `<div class="chips" style="padding:0 0 10px">${SC.map((s, i) => `<button class="chip ${i === day ? 'on' : ''}" data-act="day" data-d="${i}">${esc(s.tab)}</button>`).join('')}</div>
+    <div class="card"><span class="mtag" style="margin:0">${esc(dd.badge)}</span><h3 style="margin:6px 0 14px;font-size:17px">${esc(dd.title)}</h3>
+    ${arr(dd.items).map(it => { const w = new Date(`${dd.d}T${it.at}:00+09:00`); return `<div class="tl ${cur && +cur.when === +w ? 'cur' : ''}"><div class="tt">${esc(it.t)}</div><div class="ti">${esc(it.ti)}</div>${it.su ? `<div class="su">${esc(it.su)}</div>` : ''}${arr(it.list).length ? `<ul>${arr(it.list).map(l => `<li><b>${esc(l[0])}</b><span>${esc(l[1])}</span></li>`).join('')}</ul>` : ''}</div>`; }).join('')}
+    ${isAdmin() ? `<div class="row" style="margin-top:4px"><button class="btn sm gray" data-act="editSched">일정 수정</button><button class="btn sm gray" data-act="editDay">날짜 정보·유의사항 수정</button></div>` : ''}</div>
+    ${dd.tip ? `<div class="card tipbox"><b style="font-size:13.5px">💡 이날의 유의사항</b><div style="margin-top:6px">${rich(dd.tip)}</div></div>` : ''}
+    <h3 class="sec">안내</h3>
+    <div class="card gl" style="padding:4px 14px">
+      <button data-act="guide" data-g="places"><i>📍</i>장소 안내 (주소·지도)</button>
+      <button data-act="guide" data-g="check"><i>🎒</i>준비물 체크리스트</button>
+      <button data-act="guide" data-g="rules"><i>🛡️</i>안전 및 행동수칙</button>
+      <button data-act="guide" data-g="manner"><i>🍱</i>문화·식사 예절</button>
+      <button data-act="guide" data-g="lang"><i>🗣️</i>필수 일본어 (발음 듣기·크게 보여주기)</button>
+      <button data-act="guide" data-g="spots"><i>🗺️</i>탐방지 사전 정보</button>
+      <button data-act="guide" data-g="yen"><i>💴</i>엔화 계산기</button>
+      <button data-act="guide" data-g="install"><i>📲</i>홈 화면에 앱 설치하기</button>
+    </div>
+    <div class="card"><div class="row"><div>${av(me.name, me.group)}</div><div><b>${esc(me.name)}</b> <span class="gtag">${isAdmin() ? '운영 담당' : GROUPS[me.group]}</span><div class="meta">내 계정</div></div><span class="sp"></span><button class="btn sm gray" data-act="rename">이름 수정</button></div></div>`);
+}
+
+function render() {
+  if (!me) return;
+  ({ home: renderHome, talk: renderTalk, mission: renderMission, members: renderMembers, guide: renderGuide })[tab]();
+  if (sheetLive) sheetLive();
+  renderBadges();
+}
+
+/* ---------- 시트 / 뷰어 ---------- */
+function openSheet(title, body, foot = '', live = null) { $('#shT').textContent = title; $('#shB')._h = null; $('#shB').innerHTML = body; $('#shF').innerHTML = foot; $('#shF').hidden = !foot; sheetLive = live; $('#sheet').classList.add('on'); $('#shB').scrollTop = 0; if (live) live(); }
+function closeSheet() { $('#sheet').classList.remove('on'); sheetLive = null; composing = null; ED = null; if (window.speechSynthesis) speechSynthesis.cancel(); }
+function openViewer(html) { $('#viewerBody').innerHTML = html; $('#viewer').classList.add('on'); }
+function closeViewer() { $('#viewerBody').innerHTML = ''; $('#viewer').classList.remove('on'); }
+const saveBar = u => `<div class="vbar"><a class="btn sm gray" href="${esc(cl(u, 'fl_attachment'))}" download target="_blank" rel="noopener">⬇ 저장</a></div>`;
+
+function openPost(pid) {
+  const foot = `<div class="inbar" style="border:0"><input id="cmtIn" placeholder="댓글 달기" maxlength="300"><button class="ibtn send" data-act="cmtSend" data-pid="${pid}">➤</button></div>`;
+  openSheet('글 보기', '', foot, () => {
+    const p = S.posts[pid]; if (!p) return setHtml($('#shB'), '<div class="empty">삭제된 글입니다.</div>');
+    const cs = entries(S.comments[pid]).sort((a, b) => tsOf(a) - tsOf(b)), rs = Object.values(S.reactions[pid] || {});
+    setHtml($('#shB'), postCard({ id: pid, ...p }, true) +
+      (rs.length ? `<div class="hint" style="margin:-4px 2px 10px">${rs.map(r => `${r.e} ${esc(r.name)}`).join(' · ')}</div>` : '') +
+      `<b style="font-size:14px">댓글 ${cs.length}</b>` +
+      (cs.map(c => `<div class="cmt">${av(c.name, c.group)}<div class="b"><b style="font-size:13px">${esc(c.name)}</b><span class="gtag">${GROUPS[c.group] || ''}</span> <span class="meta">${fmtTime(tsOf(c))}</span><p>${esc(c.text)}</p></div>${c.uid === uid || isAdmin() ? `<button class="meta" data-act="delCmt" data-pid="${pid}" data-id="${c.id}">삭제</button>` : ''}</div>`).join('') || '<div class="empty" style="padding:18px 0">첫 댓글을 남겨 보세요.</div>') +
+      (p.uid === uid || isAdmin() ? `<button class="btn red sm" style="margin-top:14px" data-act="delPost" data-pid="${pid}">이 글 삭제</button>` : ''));
+  });
+}
+
+/* ---------- 카톡 공유 · 메일 알림 ---------- */
+const appUrl = () => location.origin + location.pathname;
+const shareBtn = (t, cls = 'btn sm ghost', label = '💬 카톡 공유') => `<button class="${cls}" data-act="share" data-t="${esc(t)}">${label}</button>`;
+function shareSheet(title, text) {
+  const t = `[히로시마 교류]\n${text}\n\n앱에서 확인 👉 ${appUrl()}`;
+  openSheet(title, `<div class="hint" style="margin:0 0 8px">학생들이 바로 알 수 있도록 카톡 단체방에도 보내세요.</div><div class="warnbox" style="margin:0;background:#f8fafc;border-color:var(--line);color:var(--tx)">${esc(t)}</div>${shareBtn(t, 'btn big full', '💬 카톡방에 공유하기')}<button class="btn gray full" style="margin-top:8px" data-act="closeSheet">공유하지 않고 닫기</button>`);
+  $('#shB .btn.big').style.marginTop = '12px';
+}
+function notifyMail(text) {   // 학생의 1:1 채팅을 운영 담당 메일로 알림 (설정된 경우에만, 2분에 한 번)
+  const h = S.hook; if (!h?.url || isStaff()) return; const last = ls.get('mailAt', 0); if (Date.now() - last < 120e3) return; ls.set('mailAt', Date.now());
+  fetch(h.url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ token: h.token || '', uid, name: me.name, group: GROUPS[me.group] || '', text: String(text).slice(0, 500), url: appUrl() }) }).catch(() => {});
+}
+
+/* ---------- 글쓰기 / 미션 제출 ---------- */
+let composing = null;
+function openComposer(tag) {
+  const m = missions().find(x => x.id === tag);
+  composing = { tag, imgs: [], video: null, busy: false };
+  openSheet(m ? `${m.icon || '🎯'} 미션 ${mNo(tag)} 제출` : '글쓰기', `
+    ${m ? `<div class="warnbox" style="margin-top:0">${esc(m.desc)}</div>` : ''}
+    <label class="f">내용</label><textarea class="in" id="cTxt" rows="${m && lines(m.ph).length > 2 ? 7 : 4}" maxlength="2000" placeholder="${esc(m ? m.ph : '지금 이 순간을 친구들과 나눠 보세요!')}"></textarea>
+    <div class="row" style="margin-top:10px"><button class="btn ghost" data-act="pickImg">📷 사진 (최대 5장)</button><button class="btn ghost" data-act="pickVid">🎬 영상</button></div>
+    <div class="pv" id="cPv"></div><div id="cMsg"></div>
+    <label class="f">영상 링크로 제출 (선택)</label><input class="in" id="cLink" inputmode="url" placeholder="https://… (드라이브·유튜브 공유 링크)">
+    <div class="prog" id="cProg" hidden><i></i></div><div class="hint" id="cStat"></div>
+    <button class="btn big full" style="margin-top:14px" id="cGo" data-act="submitPost">${m ? '미션 제출하기' : '올리기'}</button>`);
+}
+function drawPv() {
+  if (!composing) return;
+  $('#cPv').innerHTML = composing.imgs.map((f, i) => `<div><img src="${f.url}" alt=""><button data-act="rmImg" data-i="${i}">✕</button></div>`).join('') +
+    (composing.video ? `<div>🎬<br>${(composing.video.size / 1048576).toFixed(0)}MB<button data-act="rmVid">✕</button></div>` : '');
+}
+async function submitPost() {
+  const c = composing; if (!c || c.busy) return;
+  const text = $('#cTxt').value.trim(), link = $('#cLink').value.trim();
+  if (link && !safeUrl(link)) return toast('링크는 https:// 로 시작해야 합니다.');
+  if (!text && !c.imgs.length && !c.video && !link) return toast('내용이나 사진·영상을 넣어 주세요.');
+  c.busy = true; const go = $('#cGo'), prog = $('#cProg'), stat = $('#cStat'); go.disabled = true; prog.hidden = false;
+  const bar = v => { const i = $('i', prog); if (i) i.style.width = Math.round(v * 100) + '%'; };
+  try {
+    const media = []; const n = c.imgs.length + (c.video ? 1 : 0); let k = 0;
+    for (const f of c.imgs) { stat.textContent = `사진 올리는 중 (${++k}/${n})`; bar(0); const r = await upload(await shrink(f.file), 'image', bar); media.push({ t: 'i', u: r.u }); }
+    if (c.video) { stat.textContent = `영상 올리는 중 (${++k}/${n}) · 화면을 켜 두세요`; bar(0); const r = await upload(c.video, 'video', bar); media.push({ t: 'v', u: r.u, fmt: r.fmt || '' }); }
+    stat.textContent = '저장 중…';
+    await B.push('posts', { uid, name: me.name, group: me.group, text, tag: c.tag, media, link, ts: B.now() });
+    closeSheet(); toast(c.tag === 'feed' ? '올렸습니다!' : '미션이 제출되었습니다 🎉');
+  } catch (e) { console.error(e); stat.textContent = ''; prog.hidden = true; go.disabled = false; c.busy = false; toast(e.message || '실패했습니다. 다시 시도해 주세요.'); }
+}
+async function onPickVid(file) {
+  const c = composing; if (!c || !file) return; const msg = $('#cMsg'); msg.innerHTML = '';
+  if (file.size <= VIDEO_MAX) { c.video = file; return drawPv(); }
+  const mb = (file.size / 1048576).toFixed(0);
+  msg.innerHTML = `<div class="warnbox">영상이 ${mb}MB라서 자동 압축을 시도합니다. 영상 길이만큼 시간이 걸리니 화면을 켜 둔 채 기다려 주세요.<div class="prog"><i id="zBar"></i></div></div>`;
+  try {
+    const out = await compressVideo(file, v => { const b = $('#zBar'); if (b) b.style.width = Math.round(v * 100) + '%'; });
+    if (composing !== c) return;
+    if (!out.size || out.size > VIDEO_MAX) throw new Error('압축 후에도 용량이 큽니다.');
+    c.video = out; msg.innerHTML = `<div class="hint">압축 완료: ${mb}MB → ${(out.size / 1048576).toFixed(0)}MB</div>`; drawPv();
+  } catch (e) {
+    if (composing !== c) return;
+    msg.innerHTML = `<div class="warnbox"><b>영상이 너무 큽니다 (${mb}MB, 최대 95MB).</b>\n① 캡컷 등 편집 앱에서 <b>720p</b>로 내보낸 뒤 다시 선택하거나\n② 드라이브·유튜브에 올리고 아래 칸에 <b>링크</b>를 붙여 주세요.</div>`;
+  }
+}
+
+/* ---------- 운영 담당 편집기 ---------- */
+let ED = null;
+/* 목록형: fields = [{k, label, ta?, rows?, ph?}] */
+function editList(title, items, fields, onSave, opt = {}) {
+  ED = { items: clone(items), fields, onSave, fixed: !!opt.fixed, mk: opt.mk || (() => ({})), reset: opt.reset, note: opt.note || '' };
+  openSheet(title, '', `<div style="padding:10px 16px"><button class="btn big full" data-act="edSave">저장</button></div>`); drawEd();
+}
+function drawEd() {
+  $('#shB').innerHTML = (ED.note ? `<div class="hint" style="margin:0 0 10px">${ED.note}</div>` : '') + ED.items.map((it, i) => `<div class="card ed" data-i="${i}">${ED.fields.map(f => `<label class="f">${f.label}</label>${f.ta ? `<textarea class="in" data-f="${f.k}" rows="${f.rows || 3}" placeholder="${esc(f.ph || '')}">${esc(it[f.k] ?? '')}</textarea>` : `<input class="in" data-f="${f.k}" placeholder="${esc(f.ph || '')}" value="${esc(it[f.k] ?? '')}">`}`).join('')}${ED.fixed ? '' : `<div class="row" style="margin-top:10px"><button class="btn sm gray" data-act="edMove" data-d="-1">↑</button><button class="btn sm gray" data-act="edMove" data-d="1">↓</button><span class="sp"></span><button class="btn sm red" data-act="edDel">삭제</button></div>`}</div>`).join('') +
+    (ED.fixed ? '' : `<button class="btn ghost full" data-act="edAdd">＋ 항목 추가</button>`) + (ED.reset ? `<button class="btn sm gray" style="margin-top:14px" data-act="edReset">기본 내용으로 되돌리기</button>` : '');
+}
+function edRead() { document.querySelectorAll('#shB .ed').forEach(c => { const it = ED.items[+c.dataset.i]; c.querySelectorAll('[data-f]').forEach(e => (it[e.dataset.f] = e.value.trim())); }); }
+/* 글형: 한 덩어리 텍스트 */
+function editText(title, text, onSave, note, reset) {
+  ED = { text: true, onSave, reset };
+  openSheet(title, `<div class="hint" style="margin:0 0 8px">${note || ''}</div><textarea class="in" id="edTxt" rows="14">${esc(text)}</textarea>${reset ? `<button class="btn sm gray" style="margin-top:14px" data-act="edReset">기본 내용으로 되돌리기</button>` : ''}`, `<div style="padding:10px 16px"><button class="btn big full" data-act="edSave">저장</button></div>`);
+}
+const saveC = (k, v, msg = '저장했습니다. 모든 화면에 반영됩니다.') => B.set('content/' + k, v).then(() => { closeSheet(); toast(msg); }).catch(e => toast('저장 실패: ' + e.message));
+const HHMM = /^([01]\d|2[0-3]):[0-5]\d$/;
+const EDITORS = {
+  sched() {
+    const SC = clone(C('sched')), dd = SC[day];
+    editList(`${dd.tab} 일정 수정`, arr(dd.items).map(it => ({ at: it.at, t: it.t, ti: it.ti, su: it.su || '', list: arr(it.list).map(l => `${l[0]} ${l[1]}`).join('\n') })),
+      [{ k: 'ti', label: '일정 제목' }, { k: 't', label: '화면에 보이는 시간', ph: '예) 09:30, 오후, 석식 후' }, { k: 'at', label: '실제 시작 시각 (24시간제, 정렬·다음 일정 계산용)', ph: 'HH:MM 예) 13:00' }, { k: 'su', label: '메모 (선택)' }, { k: 'list', label: '세부 시간표 (선택, 한 줄에 "08:30 내용")', ta: 1, rows: 3 }],
+      items => {
+        for (const it of items) { if (!it.ti) return toast('제목이 빈 항목이 있습니다.'); if (!HHMM.test(it.at)) return toast(`"${it.ti}"의 시작 시각을 HH:MM 형식으로 적어 주세요.`); }
+        dd.items = items.sort((a, b) => a.at.localeCompare(b.at)).map(it => { const o = { at: it.at, t: it.t || it.at, ti: it.ti, su: it.su || '' }; const ls2 = lines(it.list).map(l => l.match(/^(\d{1,2}:\d{2})\s+(.+)$/)).filter(Boolean).map(m => [m[1].padStart(5, '0'), m[2]]); if (ls2.length) o.list = ls2; return o; });
+        saveC('sched', SC);
+      }, { mk: () => ({ at: '12:00', t: '', ti: '', su: '', list: '' }), note: '저장하면 시작 시각 순서로 정렬됩니다.' });
+  },
+  day() {
+    const SC = clone(C('sched')), dd = SC[day];
+    editList(`${dd.tab} 날짜 정보`, [{ tab: dd.tab, badge: dd.badge, title: dd.title, tip: dd.tip || '' }],
+      [{ k: 'tab', label: '탭 이름' }, { k: 'badge', label: '꼬리표' }, { k: 'title', label: '이날의 제목' }, { k: 'tip', label: '유의사항 (한 줄에 하나, "- 이름: 설명")', ta: 1, rows: 8 }],
+      ([v]) => { Object.assign(dd, v); saveC('sched', SC); }, { fixed: true });
+  },
+  missions() {
+    editList('미션 수정', missions(), [{ k: 'icon', label: '아이콘 (이모지)' }, { k: 'title', label: '미션 제목' }, { k: 'when', label: '날짜 표시', ph: '예) 22일, 자유' }, { k: 'desc', label: '설명', ta: 1, rows: 4 }, { k: 'ph', label: '작성 칸 예시 문구', ta: 1, rows: 3 }],
+      items => { if (items.some(m => !m.title)) return toast('제목이 빈 미션이 있습니다.'); saveC('missions', items); },
+      { mk: () => ({ id: 'm' + Date.now().toString(36), icon: '🎯', title: '', when: '', desc: '', ph: '' }), reset: 'missions', note: '미션을 삭제하면 그 미션의 제출물이 현황에서 빠집니다. 진행 중에는 내용만 고치는 편이 안전합니다.' });
+  },
+  places() {
+    editList('장소 안내 수정', C('places'), [{ k: 'name', label: '이름 (한국어)' }, { k: 'jp', label: '일본어 이름·주소 (현지에서 보여 줄 내용)', ta: 1, rows: 2 }, { k: 'q', label: '지도 검색어 (일본어 이름 권장)' }, { k: 'note', label: '메모 (선택)' }],
+      items => { if (items.some(p => !p.name)) return toast('이름이 빈 장소가 있습니다.'); saveC('places', items); }, { mk: () => ({ name: '', jp: '', q: '', note: '' }), reset: 'places' });
+  },
+  sos() {
+    editList('비상 연락망 수정', C('sos'), [{ k: 'label', label: '이름' }, { k: 'sub', label: '설명' }, { k: 'tel', label: '전화번호 (국가번호 포함)', ph: '+81-…' }],
+      items => { if (items.some(p => !p.label || !p.tel)) return toast('이름과 전화번호를 모두 적어 주세요.'); saveC('sos', items); }, { mk: () => ({ label: '', sub: '', tel: '' }), reset: 'sos', note: '공개 주소의 앱이라 개인 휴대폰 번호는 넣지 않는 것을 권합니다.' });
+  },
+  bingo() {
+    editText('빙고 주제 수정', C('bingo'), t => { const l = lines(t); if (l.length !== 9) return toast(`주제는 정확히 9줄이어야 합니다. (지금 ${l.length}줄)`); saveC('bingo', l.join('\n')); }, '한 줄에 주제 하나씩, 9줄을 적습니다. 왼쪽 위부터 오른쪽으로 채워집니다. 진행 중에 바꾸면 이미 올린 사진과 주제가 어긋납니다.', 'bingo');
+  },
+  guide(k) {
+    const T = { check: ['준비물 수정', '한 줄에 준비물 하나씩 적습니다.'], rules: ['안전·행동수칙 수정', '한 줄에 하나씩. "- 이름: 설명" 형식이면 이름이 굵게 보입니다. "# 제목"은 소제목입니다.'], manner: ['문화·식사 예절 수정', '"# 제목"은 소제목, "- 내용"은 항목입니다.'], spots: ['탐방지 정보 수정', '한 줄에 하나씩. "- 이름: 설명" 형식이면 이름이 굵게 보입니다.'] }[k];
+    editText(T[0], G(k), t => { if (!t.trim()) return toast('내용이 비어 있습니다.'); saveC('guide/' + k, t.trim()); }, T[1], 'guide/' + k);
+  }
+};
+
+/* ---------- 안내 시트 ---------- */
+const admBtn = (ed, arg = '') => (isAdmin() ? `<button class="btn sm gray" style="margin-bottom:10px" data-act="edit" data-ed="${ed}" data-arg="${arg}">✏️ 내용 수정</button>` : '');
+function openGuide(g) {
+  if (g === 'check') { const ck = ls.get('check2', {}); return openSheet('🎒 준비물 체크리스트', admBtn('guide', 'check') + lines(G('check')).map((t, i) => `<label class="ck"><input type="checkbox" data-ck="${esc(t)}" ${ck[t] ? 'checked' : ''}><span ${i === 0 ? 'style="color:var(--red);font-weight:700"' : ''}>${esc(t)}</span></label>`).join('') + '<div class="hint">체크한 내용은 이 휴대폰에 저장됩니다.</div>'); }
+  if (g === 'rules') return openSheet('🛡️ 안전 및 행동수칙', admBtn('guide', 'rules') + rich(G('rules')));
+  if (g === 'manner') return openSheet('🍱 문화 및 식사 예절', admBtn('guide', 'manner') + rich(G('manner')));
+  if (g === 'spots') return openSheet('🗺️ 탐방지 사전 정보', admBtn('guide', 'spots') + rich(G('spots')) + '<a class="linkbox" style="margin-top:12px" href="https://dive-hiroshima.com/kr/" target="_blank" rel="noopener">🔗 히로시마 공식 관광 사이트에서 더 알아보기</a>');
+  if (g === 'places') return openSheet('📍 장소 안내', admBtn('places') + '<div class="hint" style="margin:0 0 10px">일본어 이름·주소를 누르면 복사됩니다. 현지 분께 화면을 보여 드려도 됩니다. 지도는 인터넷이 될 때만 열립니다.</div>' + C('places').map(p => `<div class="card" style="padding:12px"><b>${esc(p.name)}</b>${p.jp ? `<button class="cp" style="display:block;text-align:left;color:var(--pri);font-weight:600;margin-top:4px;white-space:pre-wrap" data-act="copy" data-t="${esc(p.jp)}">${esc(p.jp)}</button>` : ''}${p.note ? `<div class="hint">${esc(p.note)}</div>` : ''}<div class="row" style="margin-top:8px"><a class="btn sm" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(p.q || p.jp || p.name)}" target="_blank" rel="noopener">🗺️ 지도 열기</a>${p.jp ? `<button class="btn sm ghost" data-act="show" data-jp="${esc(p.jp)}" data-ko="${esc(p.name)}">🔍 크게 보기</button>` : ''}</div></div>`).join(''));
+  if (g === 'lang') return openSheet('🗣️ 필수 일본어', '<div class="hint" style="margin:0 0 10px">🔊 발음 듣기 · 🔍 상대에게 크게 보여주기</div>' + PHRASES.map(([h, ps]) => `<h3 class="sec">${h}</h3>` + ps.map(([ko, jp, rd]) => `<div class="ph"><div class="b"><b>${ko}</b><span>${rd} · ${jp}</span></div><button class="ibtn" data-act="say" data-jp="${esc(jp)}">🔊</button><button class="ibtn" data-act="show" data-jp="${esc(jp)}" data-ko="${esc(ko)}">🔍</button></div>`).join('')).join(''));
+  if (g === 'yen') { const r = ls.get('yenRate', CONFIG.yenRate); return openSheet('💴 엔화 계산기', `<label class="f">금액 (엔)</label><input class="in" id="yenIn" inputmode="numeric" placeholder="예: 1200"><div class="card" style="margin-top:12px;text-align:center;font-size:22px;font-weight:700" id="yenOut">0원</div><label class="f">환율 (1엔 = 몇 원)</label><input class="in" id="yenRate" inputmode="decimal" value="${r}"><div class="hint">환율은 대략값입니다. 직접 수정할 수 있습니다.</div>`); }
+  if (g === 'install') return openSheet('📲 홈 화면에 앱 설치하기', `<ul class="pl"><li><b>아이폰 (사파리):</b> 아래쪽 공유 버튼(□↑) → "홈 화면에 추가"</li><li><b>갤럭시 (크롬):</b> 오른쪽 위 ⋮ → "홈 화면에 추가" 또는 "앱 설치"</li></ul><div class="hint">설치한 뒤에는 홈 화면의 아이콘으로 들어오세요. 아이폰은 설치 후 처음 열 때 이름을 한 번 더 입력해야 합니다.</div>`);
+}
+function openSos() {
+  openSheet('🚨 비상 연락망', admBtn('sos') + (isStaff() ? '' : `<button class="btn big full" data-act="dm" data-uid="${uid}">💬 선생님께 채팅하기</button><div class="hint" style="margin-bottom:10px">인솔 교사 모두가 함께 봅니다. 답이 없고 급하면 카톡 보이스톡으로 바로 전화하세요.</div>`) +
+    C('sos').map(c => `<div class="ct"><div class="b"><b>${esc(c.label)}</b><span>${esc(c.sub || '')}</span><button class="cp" style="display:block" data-act="copy" data-t="${esc(c.tel)}">${esc(c.tel)} 📋</button></div><a class="btn sm" href="tel:${esc(String(c.tel).replace(/[^+\d]/g, ''))}">📞 전화</a></div>`).join('') +
+    `<div class="hint">번호를 누르면 복사됩니다. 전화 버튼은 로밍 중인 휴대폰에서만 걸리고, 데이터 전용 유심(eSIM)이나 와이파이만 쓰는 경우에는 걸리지 않습니다. 그럴 때는 선생님께 채팅이나 보이스톡을 하세요.</div>`);
+}
+function openBell() {
+  const its = bellItems(), last = seen('bell');
+  openSheet('🔔 알림', its.map(i => `<button class="bell ${i.ts > last ? 'new' : ''}" data-act="bellGo" data-pid="${i.pid || ''}" data-go="${i.go || ''}"><i>${i.ic}</i><div style="min-width:0"><div style="word-break:break-word">${esc(i.tx.length > 70 ? i.tx.slice(0, 70) + '…' : i.tx)}</div><div class="meta">${fmtTime(i.ts)}</div></div></button>`).join('') || '<div class="empty">새 알림이 없습니다.</div>');
+  if (its.length) markSeen('bell', its[0].ts); renderBadges();
+}
+
+/* ---------- 가입 ---------- */
+function showJoin(edit) {
+  $('#joinBox').innerHTML = `<h2 style="margin:0 0 4px;color:var(--pri)">히로시마 교류 🇯🇵</h2><div class="meta">${edit ? '이름을 수정합니다.' : '처음 한 번만 입력하면 됩니다.'}</div>
+    <label class="f">이름</label><input class="in" id="jName" maxlength="10" placeholder="홍길동" value="${esc(me?.name || '')}">
+    ${edit ? '' : `<label class="f">소속</label><select class="in" id="jGroup"><option value="g1">1조</option><option value="g2">2조</option><option value="g3">3조</option><option value="g4">4조</option><option value="T">인솔 교사</option></select>
+    <label class="f">입장 코드</label><input class="in" id="jCode" autocapitalize="off" autocomplete="off" placeholder="${DEMO ? '체험 모드: 아무 글자나 입력' : '선생님이 알려준 코드'}">
+    <div id="jPinBox" hidden><label class="f" id="jPinLabel">교사 코드</label><input class="in" id="jPin" type="password" autocomplete="off" placeholder="${DEMO ? '체험 모드: admin 입력 시 운영 담당' : ''}"></div>`}
+    <button class="btn big full" style="margin-top:18px" data-act="${edit ? 'saveName' : 'join'}">${edit ? '저장' : '시작하기'}</button>${edit ? '<button class="btn gray full" style="margin-top:8px" data-act="cancelJoin">취소</button>' : ''}<div class="miss" id="jErr"></div>`;
+  $('#join').classList.add('on');
+}
+async function doJoin() {
+  const name = $('#jName').value.trim(), sel = $('#jGroup').value, code = $('#jCode').value.trim(), pin = $('#jPin').value.trim(), err = $('#jErr');
+  if (!name) return (err.textContent = '이름을 입력해 주세요.'); if (!code) return (err.textContent = '입장 코드를 입력해 주세요.');
+  let role = sel === 'T' ? 'teacher' : 'student';
+  if (role !== 'student' && !pin) return (err.textContent = '교사 코드를 입력해 주세요.');
+  err.textContent = '확인 중…';
+  try { await B.set('members/' + uid, code); } catch { return (err.textContent = '입장 코드가 맞지 않습니다.'); }
+  if (role === 'teacher') {   // 코드가 교사 코드면 인솔 교사, 운영 담당 비밀번호면 운영 담당
+    if (DEMO) role = pin === 'admin' ? 'admin' : 'teacher';
+    else { try { await B.set('teachers/' + uid, pin); } catch { try { await B.set('admins/' + uid, pin); role = 'admin'; } catch { return (err.textContent = '교사 코드가 맞지 않습니다.'); } } }
+  }
+  me = { name, group: role === 'student' ? sel : 'T', role };
+  try { await B.set('users/' + uid, { ...me, ts: B.now() }); } catch (e) { return (err.textContent = '저장에 실패했습니다: ' + e.message); }
+  ls.set('me', me); ls.set('joinedUid', uid); $('#join').classList.remove('on'); start();
+}
+
+/* ---------- 실시간 구독 ---------- */
+let started = false, votesSub = false;
+function start() {
+  if (started) return render(); started = true; loadCache();
+  for (const k of ['users', 'posts', 'comments', 'reactions', 'acks', 'roll', 'rollChecks', 'content', 'muster', 'polls', 'pollVotes', 'bingo']) B.on(k, v => { S[k] = v; sched(); });
+  B.on('hook', v => { S.hook = v; });
+  B.on('notices', v => { if (noticesReady) Object.entries(v).forEach(([id, n]) => { if (!S.notices[id] && n.uid !== uid) toast('📢 새 공지: ' + String(n.text).slice(0, 40)); }); S.notices = v; noticesReady = true; sched(); });
+  const subbed = new Set(), subRoom = r => { if (subbed.has(r)) return; subbed.add(r); B.on('chat/' + r, v => { S.chat[r] = v; sched(); }, 300); };
+  (isStaff() ? ['all', ...GS] : ['all', me.group, 'dm_' + uid]).forEach(subRoom);
+  if (isStaff()) { B.on('users', v => Object.entries(v).forEach(([id, u]) => !staffOf(u) && subRoom('dm_' + id))); B.on('info', v => { S.info = v; sched(); }); }
+  else B.on('info/' + uid, v => { S.info = { [uid]: v }; sched(); });
+  const subVotes = () => { if (votesSub) return; votesSub = true; B.on('votes', v => { S.votes = v; sched(); }); };
+  B.on('votes/' + uid, v => { S.myVote = typeof v === 'string' ? v : null; sched(); });
+  B.on('vote', v => { S.vote = v; if (isAdmin() || (v.mission && v.open === false)) subVotes(); sched(); });
+  fetchWeather(); setInterval(fetchWeather, 30 * 60e3); setInterval(sched, 30000); render();
+}
+
+/* ---------- 동작 ---------- */
+let bingoIdx = -1;
+const A = {
+  tab(el) { tab = el.dataset.t; document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b === el)); document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id === 'v-' + tab)); render(); if (tab === 'talk' && pane === 'chat') { const l = $('#chatList'); l.scrollTop = l.scrollHeight; } },
+  pane(el) { pane = el.dataset.p; render(); if (pane === 'chat') { const l = $('#chatList'); l.scrollTop = l.scrollHeight; } },
+  room(el) { room = el.dataset.r; $('#chatList').innerHTML = ''; render(); },
+  dm(el) { closeSheet(); room = 'dm_' + el.dataset.uid; pane = 'chat'; $('#chatList').innerHTML = ''; A.tab($('nav button[data-t="talk"]')); },
+  ff(el) { feedFilter = el.dataset.f; render(); }, albumG(el) { albumG = el.dataset.g; render(); },
+  day(el) { day = +el.dataset.d; render(); },
+  bell: openBell, sos: openSos, closeSheet, closeViewer,
+  sheetBg(el, e) { if (e.target === el && !composing?.busy && !ED) closeSheet(); },
+  guide(el) { openGuide(el.dataset.g); },
+  bellGo(el) { closeSheet(); if (el.dataset.pid) openPost(el.dataset.pid); else if (el.dataset.go) A.tab($(`nav button[data-t="${el.dataset.go}"]`)); },
+  async copy(el) { try { await navigator.clipboard.writeText(el.dataset.t); toast('복사했습니다.'); } catch { toast(el.dataset.t); } },
+  async chatSend() { const i = $('#chatIn'), text = i.value.trim(); if (!text) return; i.value = ''; i.style.height = ''; if (room === 'dm_' + uid) notifyMail(text); try { await B.push('chat/' + room, { uid, name: me.name, group: me.group, text, ts: B.now() }); } catch { toast('전송 실패. 연결을 확인해 주세요.'); i.value = text; } },
+  chatImg() { $('#pickChatImg').click(); },
+  async delMsg(el) { if (armed(el)) await B.remove(`chat/${room}/${el.dataset.id}`).catch(() => toast('삭제 실패')); },
+  compose(el) { openComposer(el.dataset.tag); },
+  pickImg() { $('#pickImg').click(); }, pickVid() { $('#pickVid').click(); },
+  rmImg(el) { composing.imgs.splice(+el.dataset.i, 1); drawPv(); }, rmVid() { composing.video = null; $('#cMsg').innerHTML = ''; drawPv(); },
+  submitPost,
+  async react(el) { const { pid, e } = el.dataset, cur = S.reactions[pid]?.[uid]?.e; try { if (cur === e) await B.remove(`reactions/${pid}/${uid}`); else await B.set(`reactions/${pid}/${uid}`, { e, name: me.name, ts: B.now() }); } catch { toast('연결을 확인해 주세요.'); } },
+  post(el) { openPost(el.dataset.pid); },
+  async cmtSend(el) { const i = $('#cmtIn'), text = i.value.trim(); if (!text) return; i.value = ''; try { await B.push('comments/' + el.dataset.pid, { uid, name: me.name, group: me.group, text, ts: B.now() }); const b = $('#shB'); setTimeout(() => (b.scrollTop = b.scrollHeight), 80); } catch { toast('전송 실패'); i.value = text; } },
+  async delCmt(el) { if (armed(el)) await B.remove(`comments/${el.dataset.pid}/${el.dataset.id}`).catch(() => toast('삭제 실패')); },
+  async delPost(el) { if (armed(el)) await B.remove('posts/' + el.dataset.pid).then(() => { closeSheet(); toast('삭제했습니다.'); }).catch(() => toast('삭제 실패')); },
+  view(el) { const p = S.posts[el.dataset.pid], m = arr(p?.media)[+el.dataset.i]; if (!m) return; openViewer(m.t === 'v' ? `<video src="${esc(vidUrl(m))}" controls autoplay playsinline></video>` + saveBar(m.u) : `<img src="${esc(full(m.u))}" alt="">` + saveBar(m.u)); },
+  viewImg(el) { openViewer(`<img src="${esc(full(el.dataset.u))}" alt="">` + saveBar(el.dataset.u)); },
+  subs(el) { const id = el.dataset.m; openSheet(`🎯 미션 ${mNo(id)} 제출물`, '', '', () => setHtml($('#shB'), sortedPosts().filter(p => p.tag === id).map(p => postCard(p)).join('') || '<div class="empty">아직 제출물이 없습니다.</div>')); },
+  async ack(el) { await B.set(`acks/${el.dataset.id}/${uid}`, { name: me.name, ts: B.now() }).catch(() => toast('연결을 확인해 주세요.')); },
+  /* 인원 보고 */
+  async rollMe(el) { await B.set(`rollChecks/${el.dataset.rid}/${uid}`, { name: me.name, group: me.group, ts: B.now() }).then(() => toast('확인되었습니다.')).catch(() => toast('연결을 확인해 주세요.')); },
+  async rollGroup(el) { if (!armed(el, '조원이 모두 있나요? 한 번 더 누르면 보고')) return; await B.set(`rollChecks/${el.dataset.rid}/${me.group}`, { name: me.name, uid, ts: B.now() }).then(() => toast(`${GROUPS[me.group]} 보고 완료`)).catch(() => toast('연결을 확인해 주세요.')); },
+  async rollFor(el) { const u = S.users[el.dataset.uid]; await B.set(`rollChecks/${el.dataset.rid}/${el.dataset.uid}`, { name: u?.name || '', group: u?.group || '', ts: B.now(), by: uid }).catch(() => toast('실패')); },
+  async rollClose(el) { if (armed(el)) await B.set(`roll/${el.dataset.rid}/open`, false).catch(() => toast('실패')); },
+  newRoll() { const d = new Date(); openSheet('🙋 인원 보고 시작', `<label class="f">종류</label><select class="in" id="rKind"><option value="room">객실 점호 — 각자 "방에 있어요"</option><option value="group">조별 보고 — 조에서 한 명이 "모두 함께 있어요"</option></select><label class="f">제목</label><input class="in" id="rTitle" maxlength="30" value="${pad(d.getHours())}:${pad(d.getMinutes())} 인원 보고"><div class="hint">학생 홈 화면에 보고 버튼이 나타납니다.</div><button class="btn ok big full" style="margin-top:12px" data-act="sendRoll">시작</button>`); },
+  async sendRoll() { const title = $('#rTitle').value.trim() || '인원 보고'; const kind = $('#rKind').value; await B.push('roll', { title, kind, open: true, uid, ts: B.now() }).then(() => shareSheet('인원 보고를 시작했습니다', `🙋 인원 보고: ${title}\n${kind === 'group' ? '조에서 한 명이 앱 홈 화면의 "우리 조 모두 함께 있어요"를 눌러 주세요.' : '각자 앱 홈 화면의 "방에 있어요"를 눌러 주세요.'}`)).catch(e => toast('실패: ' + e.message)); },
+  /* 공지 */
+  async delNotice(el) { if (armed(el)) await B.remove('notices/' + el.dataset.id).catch(() => toast('삭제 실패')); },
+  newNotice() { openSheet('📢 공지 쓰기', `<textarea class="in" id="nTxt" rows="5" maxlength="500" placeholder="예) 내일 조식은 7시, 로비 집합은 7시 50분입니다."></textarea><div class="hint">공지는 모든 학생의 홈 화면에 뜨고, 누가 확인했는지 볼 수 있습니다.</div><button class="btn big full" style="margin-top:12px" data-act="sendNotice">공지 올리기</button>`); },
+  async sendNotice() { const text = $('#nTxt').value.trim(); if (!text) return; await B.push('notices', { text, uid, name: me.name, ts: B.now() }).then(() => shareSheet('공지를 올렸습니다', `📢 공지\n${text}`)).catch(e => toast('실패: ' + e.message)); },
+  /* 집합 안내 */
+  newMuster() { const d = new Date(Date.now() + 30 * 60e3); openSheet('⏰ 집합 안내', `<label class="f">집합 시각 (오늘)</label><input class="in" id="muT" type="time" value="${pad(d.getHours())}:${pad(Math.floor(d.getMinutes() / 5) * 5)}"><label class="f">장소</label><input class="in" id="muP" maxlength="30" placeholder="예) 버스 앞, 호텔 로비"><label class="f">메모 (선택)</label><input class="in" id="muM" maxlength="60" placeholder="예) 여권 지참"><div class="hint">모든 학생의 홈 맨 위에 남은 시간과 함께 표시되고, 시각이 20분 지나면 자동으로 사라집니다.</div><button class="btn big full" style="margin-top:12px" data-act="sendMuster">안내 올리기</button>`); },
+  async sendMuster() { const time = $('#muT').value, place = $('#muP').value.trim(); if (!HHMM.test(time) || !place) return toast('시각과 장소를 입력해 주세요.'); const at = new Date(`${jstToday()}T${time}:00+09:00`).getTime(); if (at < Date.now() - 60e3) return toast('이미 지난 시각입니다.'); const memo = $('#muM').value.trim(); await B.set('muster', { at, time, place, memo, uid, ts: B.now() }).then(() => shareSheet('집합 안내를 올렸습니다', `⏰ 집합 안내\n${time} · ${place}${memo ? '\n' + memo : ''}`)).catch(e => toast('실패: ' + e.message)); },
+  async musterOff(el) { if (armed(el)) await B.remove('muster').catch(() => toast('실패')); },
+  /* 공유 · 메일 알림 설정 */
+  async share(el) { const t = el.dataset.t; if (navigator.share) { try { await navigator.share({ text: t }); } catch {} } else { try { await navigator.clipboard.writeText(t); toast('복사했습니다. 카톡방에 붙여 넣으세요.'); } catch { toast('공유를 지원하지 않는 기기입니다.'); } } },
+  hookSet() { const h = S.hook || {}; openSheet('✉️ 1:1 채팅 메일 알림', `<div class="hint" style="margin:0 0 6px">학생이 "선생님께 채팅"으로 메시지를 보내면 운영 담당 메일로 알려 줍니다. 설정안내.md의 "메일 알림" 순서대로 구글 앱스 스크립트를 만든 뒤, 그 주소와 토큰을 여기에 넣으세요.</div><label class="f">앱스 스크립트 웹 앱 주소</label><input class="in" id="hkU" inputmode="url" placeholder="https://script.google.com/macros/s/…/exec" value="${esc(h.url || '')}"><label class="f">토큰 (스크립트의 TOKEN과 같은 값)</label><input class="in" id="hkT" autocapitalize="off" value="${esc(h.token || '')}"><div class="row" style="margin-top:14px"><button class="btn" data-act="hookSave">저장</button><button class="btn ghost" data-act="hookTest">시험 메일 보내기</button><span class="sp"></span><button class="btn red" data-act="hookOff">끄기</button></div><div class="hint">같은 학생의 연속 메시지는 2분에 한 번만 메일로 갑니다. 메일은 보통 1분 안에 도착합니다.</div>`); },
+  async hookSave() { const url = $('#hkU').value.trim(), token = $('#hkT').value.trim(); if (!/^https:\/\/script\.google\.com\//.test(url) || !token) return toast('주소(https://script.google.com/…)와 토큰을 입력해 주세요.'); await B.set('hook', { url, token }).then(() => { toast('저장했습니다.'); sched(); }).catch(e => toast('실패: ' + e.message)); },
+  hookTest() { const url = $('#hkU').value.trim(), token = $('#hkT').value.trim(); if (!url) return toast('주소를 먼저 입력해 주세요.'); fetch(url, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ token, uid: 'test' + Date.now(), name: me.name, group: '시험', text: '메일 알림 시험입니다.', url: appUrl() }) }).then(() => toast('보냈습니다. 1분 안에 메일이 오는지 확인하세요.')).catch(() => toast('전송 실패. 주소를 확인해 주세요.')); },
+  async hookOff(el) { if (armed(el)) await B.remove('hook').then(() => { closeSheet(); toast('메일 알림을 껐습니다.'); sched(); }).catch(() => toast('실패')); },
+  /* 간단 투표 */
+  newPoll() { openSheet('📊 투표 만들기', `<label class="f">질문</label><input class="in" id="pQ" maxlength="60" placeholder="예) 내일 자유시간에 가고 싶은 곳은?"><label class="f">선택지 (한 줄에 하나, 2~5개)</label><textarea class="in" id="pO" rows="4" placeholder="오코노미야키 골목\n혼도리 상점가"></textarea><button class="btn big full" style="margin-top:12px" data-act="sendPoll">투표 올리기</button>`); },
+  async sendPoll() { const q = $('#pQ').value.trim(), opts = lines($('#pO').value).slice(0, 5); if (!q || opts.length < 2) return toast('질문과 선택지 2개 이상을 입력해 주세요.'); await B.push('polls', { q, opts, open: true, uid, ts: B.now() }).then(() => shareSheet('투표를 올렸습니다', `📊 투표: ${q}\n${opts.map((o, i) => `${i + 1}. ${o}`).join('\n')}`)).catch(e => toast('실패: ' + e.message)); },
+  async pollVote(el) { await B.set(`pollVotes/${el.dataset.id}/${uid}`, +el.dataset.i).catch(() => toast('연결을 확인해 주세요.')); },
+  async pollClose(el) { if (armed(el)) await B.set(`polls/${el.dataset.id}/open`, false).catch(() => toast('실패')); },
+  async pollDel(el) { if (armed(el)) await B.remove('polls/' + el.dataset.id).catch(() => toast('실패')); },
+  /* 포토 빙고 */
+  bingoG(el) { bingoG = el.dataset.g; render(); },
+  bingoCell(el) { const g = el.dataset.g, i = +el.dataset.i, c = bcell(g, i), mine = g === me.group;
+    if (c?.u) return openViewer(`<img src="${esc(full(c.u))}" alt="">` + `<div class="vbar"><span class="btn sm gray">${esc(lines(C('bingo'))[i] || '')} · ${esc(c.name || '')}</span>${mine ? `<button class="btn sm" data-act="bingoRe" data-i="${i}">사진 바꾸기</button>` : ''}${isAdmin() ? `<button class="btn sm red" data-act="bingoDel" data-g="${g}" data-i="${i}">삭제</button>` : ''}</div>`);
+    if (!mine) return toast('우리 조 빙고판에서만 올릴 수 있어요.'); bingoIdx = i; $('#pickBingo').click(); },
+  bingoRe(el) { closeViewer(); bingoIdx = +el.dataset.i; $('#pickBingo').click(); },
+  async bingoDel(el) { if (armed(el)) await B.remove(`bingo/${el.dataset.g}/c${el.dataset.i}`).then(closeViewer).catch(() => toast('실패')); },
+  /* 숏폼 투표 */
+  async voteOpen() { await B.remove('votes').catch(() => {}); await B.set('vote', { mission: $('#voteM').value, open: true, uid, ts: B.now() }).then(() => shareSheet('숏폼 투표를 시작했습니다', '🏆 숏폼 투표 시작!\n미션 탭 맨 아래에서 다른 조 영상에 투표해 주세요.')).catch(e => toast('실패: ' + e.message)); },
+  async voteCast(el) { const pid = el.dataset.pid; try { if (S.myVote === pid) await B.remove('votes/' + uid); else await B.set('votes/' + uid, pid); } catch { toast('투표가 마감되었거나 연결이 불안정합니다.'); } },
+  async voteClose(el) { if (armed(el)) await B.set('vote/open', false).then(() => shareSheet('결과를 공개했습니다', '🏆 숏폼 투표 결과가 공개되었습니다!\n미션 탭에서 확인하세요.')).catch(() => toast('실패')); },
+  async voteReset(el) { if (armed(el)) { await B.remove('votes').catch(() => {}); await B.remove('vote').catch(() => toast('실패')); S.votes = {}; } },
+  /* 내 정보 */
+  editInfo(el) { const u = S.users[el.dataset.uid] || {}, i = S.info?.[el.dataset.uid] || {}; openSheet(`🪪 ${u.name || ''} 정보 입력`, `<label class="f">방 번호</label><input class="in" id="iRoom" value="${esc(i.room || '')}" placeholder="예) 1203"><label class="f">룸메이트</label><input class="in" id="iMate" value="${esc(i.mate || '')}"><label class="f">버스 좌석</label><input class="in" id="iSeat" value="${esc(i.seat || '')}" placeholder="예) 3A"><label class="f">메모 (선택)</label><input class="in" id="iMemo" value="${esc(i.memo || '')}"><div class="hint">본인과 인솔 교사만 볼 수 있습니다.</div><button class="btn big full" style="margin-top:12px" data-act="saveInfo" data-uid="${el.dataset.uid}">저장</button>`); },
+  async saveInfo(el) { await B.set('info/' + el.dataset.uid, { room: $('#iRoom').value.trim(), mate: $('#iMate').value.trim(), seat: $('#iSeat').value.trim(), memo: $('#iMemo').value.trim() }).then(() => { closeSheet(); toast('저장했습니다.'); }).catch(e => toast('실패: ' + e.message)); },
+  /* 편집기 */
+  edit(el) { EDITORS[el.dataset.ed](el.dataset.arg); }, editSched() { EDITORS.sched(); }, editDay() { EDITORS.day(); }, editMissions() { EDITORS.missions(); }, editBingo() { EDITORS.bingo(); },
+  edAdd() { edRead(); ED.items.push(ED.mk()); drawEd(); const b = $('#shB'); b.scrollTop = b.scrollHeight; },
+  edDel(el) { if (!armed(el)) return; edRead(); ED.items.splice(+el.closest('.ed').dataset.i, 1); drawEd(); },
+  edMove(el) { edRead(); const i = +el.closest('.ed').dataset.i, j = i + +el.dataset.d; if (j < 0 || j >= ED.items.length) return; [ED.items[i], ED.items[j]] = [ED.items[j], ED.items[i]]; drawEd(); },
+  edSave() { if (ED.text) return ED.onSave($('#edTxt').value); edRead(); ED.onSave(clone(ED.items)); },
+  async edReset(el) { if (armed(el)) await B.remove('content/' + ED.reset).then(() => { closeSheet(); toast('기본 내용으로 되돌렸습니다.'); }).catch(() => toast('실패')); },
+  say(el) { if (!window.speechSynthesis) return toast('이 기기는 음성 재생을 지원하지 않습니다.'); speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(el.dataset.jp); u.lang = 'ja-JP'; u.rate = 0.85; speechSynthesis.speak(u); },
+  show(el) { openViewer(`<div class="jp" style="white-space:pre-wrap">${esc(el.dataset.jp)}<small>${esc(el.dataset.ko)}</small></div>`); },
+  join: doJoin, rename() { showJoin(true); }, cancelJoin() { $('#join').classList.remove('on'); },
+  async saveName() { const name = $('#jName').value.trim(); if (!name) return; me.name = name; ls.set('me', me); await B.set('users/' + uid + '/name', name).catch(() => {}); $('#join').classList.remove('on'); render(); toast('수정했습니다. 새로 쓰는 글부터 적용됩니다.'); }
+};
+function armed(el, msg = '한 번 더 누르면 실행') { if (el.dataset.armed) return true; el.dataset.armed = 1; const o = el.innerHTML; el.textContent = msg; setTimeout(() => { if (el.isConnected) { delete el.dataset.armed; el.innerHTML = o; } }, 2500); return false; }
+
+document.addEventListener('click', e => { const el = e.target.closest('[data-act]'); if (!el) return; const f = A[el.dataset.act]; if (f) f(el, e); });
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset.ck != null) { const ck = ls.get('check2', {}); ck[t.dataset.ck] = t.checked; ls.set('check2', ck); }
+  if (t.id === 'jGroup') $('#jPinBox').hidden = t.value !== 'T';
+  if (t.id === 'pickImg' && composing) { for (const f of t.files) { if (composing.imgs.length >= 5) { toast('사진은 최대 5장입니다.'); break; } composing.imgs.push({ file: f, url: URL.createObjectURL(f) }); } t.value = ''; drawPv(); }
+  if (t.id === 'pickVid') { const f = t.files[0]; t.value = ''; onPickVid(f); }
+  if (t.id === 'pickChatImg') { const f = t.files[0]; t.value = ''; if (f) (async () => { toast('사진 보내는 중…'); try { const r = await upload(await shrink(f), 'image'); await B.push('chat/' + room, { uid, name: me.name, group: me.group, text: '', img: r.u, ts: B.now() }); if (room === 'dm_' + uid) notifyMail('(사진을 보냈습니다)'); } catch (er) { toast(er.message || '전송 실패'); } })(); }
+  if (t.id === 'pickBingo') { const f = t.files[0], i = bingoIdx; t.value = ''; if (f && i >= 0) (async () => { toast('인증샷 올리는 중…'); try { const r = await upload(await shrink(f), 'image'); await B.set(`bingo/${me.group}/c${i}`, { u: r.u, uid, name: me.name, ts: B.now() }); const s = bstat(me.group); toast(s.l ? `빙고 ${s.l}줄! 🎉` : '칸을 채웠습니다!'); } catch (er) { toast(er.message || '업로드 실패'); } })(); }
+});
+document.addEventListener('input', e => {
+  const t = e.target;
+  if (t.id === 'chatIn') { t.style.height = ''; t.style.height = Math.min(t.scrollHeight, 96) + 'px'; }
+  if (t.id === 'yenIn' || t.id === 'yenRate') { const r = parseFloat($('#yenRate').value) || 0, y = parseFloat($('#yenIn').value.replace(/,/g, '')) || 0; if (t.id === 'yenRate' && r) ls.set('yenRate', r); $('#yenOut').textContent = '약 ' + Math.round(y * r).toLocaleString('ko-KR') + '원'; }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing && e.target.id === 'cmtIn') { e.preventDefault(); $('[data-act="cmtSend"]').click(); } });
+
+/* ---------- 시작 ---------- */
+(async () => {
+  const rb = $('#ribbon');
+  if (DEMO) { rb.hidden = false; rb.textContent = '체험 모드 · 이 기기에만 저장됩니다 (설정 전)'; }
+  try { B = DEMO ? demoBackend() : await fbBackend(); uid = B.uid; }
+  catch (e) { console.error(e); rb.hidden = false; rb.textContent = '서버에 연결하지 못했습니다. 저장된 내용만 볼 수 있습니다.'; me = ls.get('me') || { name: '손님', group: 'g1', role: 'student' }; uid = ls.get('joinedUid') || 'offline'; loadCache(); const no = async () => { throw new Error('오프라인'); }; B = { uid, conn() {}, on() {}, get: async () => null, push: no, set: no, remove: no, now: () => Date.now() }; return render(); }
+  let offT; B.conn(ok => { clearTimeout(offT); if (ok) { if (!DEMO) rb.hidden = true; } else offT = setTimeout(() => { rb.hidden = false; rb.textContent = '오프라인 · 저장된 내용을 보여 줍니다. 연결되면 자동으로 이어집니다.'; }, 4000); });
+  const cm = ls.get('me');
+  if (cm && ls.get('joinedUid') === uid) {   // 이미 가입한 기기: 인터넷이 없어도 바로 시작
+    me = cm; start();
+    B.get('users/' + uid).then(p => { if (p) { me = { name: p.name, group: p.group, role: p.role }; ls.set('me', me); sched(); } }).catch(() => {});
+    return;
+  }
+  let member = null, prof = null;
+  try { member = await B.get('members/' + uid); if (member) prof = await B.get('users/' + uid); } catch (e) { console.warn(e); }
+  if (member && prof) { me = { name: prof.name, group: prof.group, role: prof.role }; ls.set('me', me); ls.set('joinedUid', uid); start(); } else showJoin(false);
+})();
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
